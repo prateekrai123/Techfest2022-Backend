@@ -3,7 +3,7 @@ import user from '../models/user'
 const User = require('../models/user')
 const {failAction, successAction} = require('../utils/response')
 
-exports.signIn = (req, res) => {
+exports.signIn = async (req, res) => {
     const errors = validationResult(req)
 
     if(!errors.isEmpty){
