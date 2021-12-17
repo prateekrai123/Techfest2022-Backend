@@ -67,6 +67,14 @@ const userSchema = mongoose.userSchema({
     },
     userId: {
         type: String,
+    },
+    isVerified: {
+        type: Boolean,
+        default: false
+    },
+    isProfileComplete: {
+        type: Boolean,
+        default: false
     }
 })
 
