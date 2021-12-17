@@ -1,6 +1,7 @@
 import { validationResult } from 'express-validator'
+import user from '../models/user'
 const User = require('../models/user')
-const {failAction} = require('../utils/response')
+const {failAction, successAction} = require('../utils/response')
 
 exports.signIn = (req, res) => {
     const errors = validationResult(req)
@@ -20,4 +21,20 @@ exports.signIn = (req, res) => {
             })
         }
     })
+
+    if(await bcrypt.compare(password, user.password)){
+        return res.status(200).json(
+            successAction({
+                user: {
+                    user 
+                }
+            })
+        )
+    }
+    else{
+        return res.status(400).json(
+            failAction("The credentials are wrong")
+        )
+    }
+    
 }
