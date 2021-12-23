@@ -1,4 +1,6 @@
 # Techfest2022-Backend
 ```Great```
 
-run npm i
+```bash
+npm i
+```
