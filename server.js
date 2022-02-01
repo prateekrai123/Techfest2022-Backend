@@ -2,7 +2,7 @@ require("./database/database");
 const express = require("express");
 const cors = require("cors");
 const bodyParser = require("body-parser");
-
+const PORT = 4000;
 //routes import
 const domain = require('./routes/domain');
 const coordinator = require('./routes/coordinator');
@@ -31,6 +31,6 @@ app.use('//', (req, res)=>{
   res.send("Welcome! u have unlocked dev mode");
 })
 
-app.listen(4000, () => {
-  console.log("Server is running at 4000");
+app.listen(PORT, () => {
+  console.log(`Server is running at ${PORT}`);
 });

@@ -9,8 +9,20 @@ const Coordinator = require('../models/coordinator');
 
 const router = express.Router();
 
+//GET, PUT, POST localhost:4000/api/coordinator
 router.post('/creating',upload.single('profile'),coordinatorController.createCoordinator);
-router.get('/get_cordinator',coordinatorController.getCoordinatorById)
+router.get('/get/:cid',
+[
+    body('Bad request! ')
+    
+]
+
+,coordinatorController.getCoordinatorById);
+
+router.get('/get-all-details',coordinatorController.getAllDetailsCoordinator);
+
+router.put('/update/:cid', coordinatorController.updateCoordinator);
+
 
 module.exports = router;
 

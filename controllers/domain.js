@@ -4,30 +4,33 @@ const {validationResult } = require('express-validator');
 
 //creating domain 
 
-exports.creatDomain = (req, res)=>{
+exports.createDomain = (req, res)=>{
 
     const {domainName, domainInfo, studentCoordinator, facultyCoordinator} = req.body;
-    const dn = req.body.domainName;
+    //const dn = req.body.domainName;
    
 
     
-    const errors = validationResult(req);
-    if(!errors.isEmpty()){
-        return res.status(422)
-        .send("sholdnt be empty");
-    }
+    // const errors = validationResult(req);
+    // if(!errors.isEmpty()){
+    //     return res.status(422)
+    //     .send("sholdnt be empty");
+    // }
 
      //splitting through , 
      let studentCoordinatorArr = studentCoordinator.split(",");
      let facultyCoordinatorArr = facultyCoordinator.split(",");
 
+  //   console.log(studentCoordinatorArr);
+
     let domain = new Domain({
         domainName:domainName, 
         domainInfo:domainInfo,
-        //  studentCoordinator:studentCoordinatorArr, 
-        //  facultyCoordinator:facultyCoordinatorArr
+         studentCoordinator:studentCoordinatorArr, 
+         facultyCoordinator:facultyCoordinatorArr,
+         photo:req.file.filename
     }) 
-   //console.log(domain)
+ // console.log(domain)
     domain.save((err, domain)=>{
         if(err){
             //err
@@ -44,3 +47,10 @@ exports.creatDomain = (req, res)=>{
 
 
 }
+
+exports.getDomain = (req, res, next) =>{
+
+
+
+}
+
