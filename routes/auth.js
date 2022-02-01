@@ -1,6 +1,16 @@
 const express = require("express");
 const { check } = require("express-validator");
-const { signUp, signIn, verifyUser, verify } = require("../controllers/auth");
+const {
+  signUp,
+  signIn,
+  verifyUser,
+  verify,
+  resetPassword,
+  signOut,
+  forgotPassword,
+  changeForgotPassword,
+  changePassword,
+} = require("../controllers/auth");
 
 var router = express.Router();
 
@@ -30,5 +40,34 @@ router.post(
 router.get("/verifyUser/:token", verifyUser);
 
 router.post("/verify", [check("email", "email is required").isEmail()], verify);
+
+router.post(
+  "/reset-password",
+  [
+    check("oldPassword", "Old password is required"),
+    check("newPassword", "New Password is required"),
+    check("email", "email is required").isEmail(),
+  ],
+  resetPassword
+);
+
+router.get("/sign-out", signOut);
+
+router.post(
+  "/forgot-password",
+  [check("email", "Email is required").isEmail()],
+  forgotPassword
+);
+
+router.get("/forget-password-token/:token", changeForgotPassword);
+
+router.post(
+  "/chage-password",
+  [
+    check("password", "Password is required"),
+    check("email", "Email is required").isEmail(),
+  ],
+  changePassword
+);
 
 module.exports = router;

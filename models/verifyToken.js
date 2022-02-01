@@ -12,7 +12,7 @@ const verifyToken = mongoose.Schema({
   expiresAt: {
     type: Date,
     default: Date.now,
-    expires: 60000,
+    expires: 6000000,
   },
 });
 
