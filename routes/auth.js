@@ -8,6 +8,8 @@ const {
   resetPassword,
   signOut,
   forgotPassword,
+  changeForgotPassword,
+  changePassword,
 } = require("../controllers/auth");
 
 var router = express.Router();
@@ -55,6 +57,17 @@ router.post(
   "/forgot-password",
   [check("email", "Email is required").isEmail()],
   forgotPassword
+);
+
+router.get("/forget-password-token/:token", changeForgotPassword);
+
+router.post(
+  "/chage-password",
+  [
+    check("password", "Password is required"),
+    check("email", "Email is required").isEmail(),
+  ],
+  changePassword
 );
 
 module.exports = router;

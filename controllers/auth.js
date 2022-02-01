@@ -227,20 +227,23 @@ module.exports.signOut = (req, res) => {
   return res.status(200).json(successAction("Signed Out successfully"));
 };
 
-exports.forgotPassword = (req, res) => {
+exports.forgotPassword = async (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
     return res.status(400).json(failAction(errors.array()[0]));
   }
 
-  const { email } = req.body.email;
+  const { email } = await req.body;
+  console.log(email);
 
   User.findOne({ email: email }, async (err, user) => {
     if (err || !user) {
       res.status(400).json(failAction("The email is not registered"));
     }
     try {
+      await verifyToken.findOneAndDelete({ email: email });
+
       const token = crypto.randomBytes(32).toString("hex");
 
       await verifyToken({
@@ -248,7 +251,7 @@ exports.forgotPassword = (req, res) => {
         email: req.body.email,
       }).save();
 
-      const uri = `http://localhost:4000/verifyUser/${token}`;
+      const uri = `http://localhost:4000/forget-password-token/${token}`;
 
       mail.sendMail({
         to: req.body.email,
@@ -261,7 +264,7 @@ exports.forgotPassword = (req, res) => {
         .status(200)
         .json(successAction("The verification email is successfully sent"));
     } catch (err) {
-      return res.status(400).json(failAction(err));
+      // return res.status(400).json(failAction(err));
     }
   });
 };
@@ -288,6 +291,40 @@ exports.changeForgotPassword = (req, res) => {
       email = res.email;
     } catch (err) {
       return res.status(404).json("Some error occured");
+    }
+  });
+};
+
+exports.changePassword = async (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(400).json(failAction(errors[0].msg));
+  }
+
+  const { email, password } = req.body;
+
+  await User.findOne({ email: email }, async (err, user) => {
+    if (err || !user) {
+      return res.status(401).json(failAction("User not found"));
+    }
+
+    const encryptedPassword = await bcrypt.hash(password, 10);
+
+    try {
+      await User.findByIdAndUpdate(
+        { email: email },
+        { $set: { password: encryptedPassword } },
+        (err, user) => {
+          if (err && !user) {
+            console.log(err);
+            return res.status(404).json(failAction("Cannot update password"));
+          } else {
+            return res.status(200).json(successAction("Password is changed"));
+          }
+        }
+      );
+    } catch (err) {
+      failAction(err);
     }
   });
 };
