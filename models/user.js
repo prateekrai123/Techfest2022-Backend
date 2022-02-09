@@ -58,6 +58,15 @@ const userSchema = mongoose.Schema({
     maxlength: 100,
     trim: true,
   },
+  referralCode: {
+    type: String,
+    maxLength: 10,
+    trim: true,
+  },
+  referrals: {
+    type: Number,
+    default: 0,
+  },
   yearOfStudy: {
     type: Number,
   },
