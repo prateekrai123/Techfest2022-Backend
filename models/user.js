@@ -1,13 +1,7 @@
 const mongoose = require("mongoose");
 
 const userSchema = mongoose.Schema({
-  firstName: {
-    type: String,
-    trim: true,
-    required: true,
-    maxLength: 32,
-  },
-  lastName: {
+  name: {
     type: String,
     trim: true,
     required: true,
@@ -57,6 +51,15 @@ const userSchema = mongoose.Schema({
     type: String,
     maxlength: 100,
     trim: true,
+  },
+  referralCode: {
+    type: String,
+    maxLength: 50,
+    trim: true,
+  },
+  referrals: {
+    type: Number,
+    default: 0,
   },
   yearOfStudy: {
     type: Number,
