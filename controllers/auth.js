@@ -65,11 +65,15 @@ exports.signUp = async (req, res) => {
   if (await User.findOne({ email: req.body.email })) {
     return res.status(400).json(failAction("The Email is already registered"));
   }
+
+  const refferalCode = req.body.referralCode;
   const uid = uuid.v4();
   const eArr = req.body.email.split("@");
   const domain = eArr[1];
   const userId = `#TF-${uid}${Date.now().toString()}${eArr[0]}`;
   const password = req.body.password;
+  const referralCode =
+    `#TF22-` + crypto.randomBytes(3).toString("hex") + eArr[0];
   let payload;
 
   try {
@@ -85,6 +89,7 @@ exports.signUp = async (req, res) => {
           userId: userId,
           regNo: eArr[0],
           hasPaidEntry: true,
+          referralCode: referralCode,
         },
       };
     } else {
@@ -93,19 +98,54 @@ exports.signUp = async (req, res) => {
           email: req.body.email,
           name: req.body.name,
           userId: userId,
+          referralCode: referralCode,
           password: encryptedPassword,
           verificationCode: uuid.v4(),
         },
       };
     }
   } catch (error) {
-    return res.status(500);
+    return res.status(500).json(failAction("Something went wrong"));
+  }
+
+  if (refferalCode) {
+    try {
+      let referrels, uid;
+      User.findOne({ referralCode: refferalCode }, async (err, user1) => {
+        if (err || !user) {
+          return res
+            .status(400)
+            .json(failAction("Referral code is invalid" + err));
+        }
+        referrels = user.referrals + 1;
+        uid = user1.userId;
+        try {
+          User.findOneAndUpdate(
+            { userId: uid },
+            { $set: { referrals: referrels } },
+            (err, user) => {
+              if (err || !user) {
+                console.log("Inserted");
+                return res
+                  .status(400)
+                  .json(failAction("Not able to update referrals. Try again"));
+              }
+            }
+          );
+        } catch (err) {
+          console.log(err);
+        }
+      });
+    } catch (err) {
+      return res.status(400).json(failAction("Something went wrong"));
+    }
   }
 
   const user = new User(payload);
 
   user.save((err, user) => {
     if (err) {
+      console.log(err);
       return res
         .status(400)
         .json(failAction("Error in SignUp. Some error occurred"));
