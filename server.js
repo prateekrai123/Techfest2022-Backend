@@ -19,14 +19,14 @@ app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
-app.use("/api/profile", express.static("upload/images"));
+app.use("/profile", express.static("upload/images"));
 
-//router  at /api/..
-app.use("/api/domain", domain);
-app.use("/api/coordinator", coordinator);
+//router  api.techfestsliet.com..
+app.use("/domain", domain);
+app.use("/coordinator", coordinator);
 app.use("/", authRoutes);
 
-app.use("/", (req, res) => {
+app.get("/", (req, res) => {
   res.send("Welcome! u have unlocked dev mode");
 });
 
