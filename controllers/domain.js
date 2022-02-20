@@ -11,11 +11,11 @@ exports.createDomain = (req, res)=>{
    
 
     
-    // const errors = validationResult(req);
-    // if(!errors.isEmpty()){
-    //     return res.status(422)
-    //     .send("sholdnt be empty");
-    // }
+    const errors = validationResult(req);
+    if(!errors.isEmpty()){
+        return res.status(422)
+        .send("sholdnt be empty");
+    }
 
      //splitting through , 
      let studentCoordinatorArr = studentCoordinator.split(",");
@@ -50,7 +50,23 @@ exports.createDomain = (req, res)=>{
 
 exports.getDomain = (req, res, next) =>{
 
+    const did = req.params.did;
+   
+    Domain.findById(did).then((d)=>{
+        if(!d){
+           // console.log(err)
+            return res.status(404).json({
+                error:"Not Found! "
+            })
+        }
 
+            res.status(200).json({
+
+                message:"get successfully",
+                d
+            })
+        
+    })
 
 }
 

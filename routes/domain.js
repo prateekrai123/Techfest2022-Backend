@@ -19,4 +19,6 @@ router.post('/creating',                     //suppose we are admin
     domainController.createDomain
 )
 
+router.get('/get-single/:did',domainController.getDomain)
+
 module.exports = router;

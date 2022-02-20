@@ -4,7 +4,8 @@ const {validationResult} = require('express-validator');
 const path = require('path');
 const multer = require("multer");
 const { json } = require('body-parser');
-
+const { failAction, successAction } = require('../utils/response');
+const fileHelper = require('../utils/file');
 
 exports.createCoordinator = (req, res, next)=>{
 
@@ -46,13 +47,17 @@ exports.getCoordinatorById = (req, res, next)=>{
     ///console.log(cid)
     Coordinator.findById(cid).then((c)=>{  //c is coordinator info
         if(!c){
-           return res.status(400).json({
-                message:"Page not found! "
-            })
+           return res.status(400).json(failAction("not found"))
         }
 
-        res.status(200).json({
+        res.status(200).json(successAction({data:c}))
+    })
+}
 
+exports.updateCoordinator=(req, res)=>{
+    const cid = req.params.cid;
+    Coordinator.updateOne(id).then((c)=>{
+        res.status(200).json({
             message:"get",
             c
         })
@@ -75,7 +80,7 @@ exports.getAllDetailsCoordinator = (req, res) =>{
 }
 
 
-exports.updateCoordinator = (req, res, next) =>{
+exports.updateGetCoordinator = (req, res, next) =>{
   const cid = req.params.cid;
   console.log(cid)
     Coordinator.findById(cid)
@@ -87,6 +92,26 @@ exports.updateCoordinator = (req, res, next) =>{
         console.log(c)
     })
 
+}
+
+
+exports.deleteCoordinator = (req, res, next) =>{
+    const cid = req.params.cid;
+    
+    Coordinator.findByIdAndDelete(cid).then((result=>{
+
+        if(!result){
+            res.status(404).json(failAction("Not found! "));
+        }
+        const pathImg = "upload/images/"+result.photo;
+        fileHelper.deleteFiles(pathImg);
+        res.status(410).json(successAction({data:result, statusCode:410, message:
+        "successfully deleted! "}));
+        
+    }))
+    .catch(err=>{
+        failAction("Not found! ");
+    })
 }
 
 

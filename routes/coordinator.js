@@ -22,7 +22,7 @@ router.get('/get/:cid',
 router.get('/get-all-details',coordinatorController.getAllDetailsCoordinator);
 
 router.put('/update/:cid', coordinatorController.updateCoordinator);
-
+router.delete('/delete/:cid', coordinatorController.deleteCoordinator);
 
 module.exports = router;
 
