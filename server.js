@@ -7,6 +7,7 @@ const PORT = 4000;
 const domain = require("./routes/domain");
 const coordinator = require("./routes/coordinator");
 const authRoutes = require("./routes/auth");
+const error404 = require("./controllers/error404");
 
 require("dotenv").config();
 
@@ -29,6 +30,8 @@ app.use("/", authRoutes);
 app.get("/", (req, res) => {
   res.send("Welcome! u have unlocked dev mode");
 });
+
+app.use(error404.get404);
 
 app.listen(PORT, () => {
   console.log(`Server is running at ${PORT}`);
