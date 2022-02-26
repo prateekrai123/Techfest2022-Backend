@@ -16,9 +16,14 @@ const app = express();
 app.use(cors());
 
 //set
+<<<<<<< HEAD
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(bodyParser.json()); // application/json
 
+=======
+app.use(bodyParser.urlencoded({ extended: false }));
+app.use(bodyParser.json()); // application/json
+>>>>>>> d6b2f7565f9db5f2b89829131b1e0feb8a60f992
 app.set("view engine", "ejs");
 app.use(express.static("public"));
 
