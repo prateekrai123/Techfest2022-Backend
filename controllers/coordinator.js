@@ -14,6 +14,7 @@ exports.createCoordinator = (req, res, next) => {
     coordinatorType,
     coordinatorDesignation,
   } = req.body;
+  // return console.log(coordinatorName);
 
   const c1 = new Coordinator({
     coordinatorName: coordinatorName,
@@ -105,15 +106,13 @@ exports.deleteCoordinator = (req, res, next) => {
       }
       const pathImg = "upload/images/" + result.photo;
       fileHelper.deleteFiles(pathImg);
-      res
-        .status(410)
-        .json(
-          successAction({
-            data: result,
-            statusCode: 410,
-            message: "successfully deleted! ",
-          })
-        );
+      res.status(410).json(
+        successAction({
+          data: result,
+          statusCode: 410,
+          message: "successfully deleted! ",
+        })
+      );
     })
     .catch((err) => {
       failAction("Not found! ");

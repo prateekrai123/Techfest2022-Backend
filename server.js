@@ -6,6 +6,7 @@ const PORT = 4000;
 //routes import
 const domain = require("./routes/domain");
 const coordinator = require("./routes/coordinator");
+const workshop = require("./routes/workshop");
 const authRoutes = require("./routes/auth");
 const error404 = require("./controllers/error404");
 
@@ -15,9 +16,10 @@ const app = express();
 app.use(cors());
 
 //set
-app.use(bodyParser.json()); // application/json
-app.set("view engine", "ejs");
 app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.json()); // application/json
+
+app.set("view engine", "ejs");
 app.use(express.static("public"));
 
 app.use("/profile", express.static("upload/images"));
@@ -25,6 +27,7 @@ app.use("/profile", express.static("upload/images"));
 //router  api.techfestsliet.com..
 app.use("/domain", domain);
 app.use("/coordinator", coordinator);
+app.use("/workshop", workshop);
 app.use("/", authRoutes);
 
 app.get("/", (req, res) => {

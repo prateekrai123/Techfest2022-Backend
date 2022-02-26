@@ -8,10 +8,10 @@ exports.createDomain = (req, res) => {
     req.body;
   //const dn = req.body.domainName;
 
-  const errors = validationResult(req);
-  if (!errors.isEmpty()) {
-    return res.status(422).send("sholdnt be empty");
-  }
+  // const errors = validationResult(req);
+  // if (!errors.isEmpty()) {
+  //   return res.status(422).send("sholdnt be empty");
+  // }
 
   //splitting through ,
   let studentCoordinatorArr = studentCoordinator.split(",");
