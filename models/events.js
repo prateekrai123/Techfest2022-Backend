@@ -16,7 +16,7 @@ const EventSchema = new mongoose.Schema({
     type: String,
   },
   date: {
-    type: String,
+    type: Date,
     required: true,
   },
   time: {
@@ -25,7 +25,7 @@ const EventSchema = new mongoose.Schema({
   },
   studentCoordinator: {
     type: ObjectId,
-    // required: true,
+    required: true,
     ref: "Coordinator",
   },
 });

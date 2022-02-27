@@ -10,7 +10,7 @@ router.post(
     check("description", "description is required"),
     check("date", "date is required"),
     check("time", "time is required"),
-    // check("studentCoordinator", "studentCoordinator is required"),
+    check("studentCoordinator", "studentCoordinator is required"),
   ],
   addEvents
 );
