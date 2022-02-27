@@ -7,27 +7,33 @@ const workshop = new Schema({
     type: String,
     maxlength: 32,
     trim: true,
+    required: true,
   },
   wsDesc: {
     type: String,
     maxlength: 2000,
     trim: true,
+    required: true,
   },
   hostName: {
     type: String,
     maxlength: 32,
     trim: true,
+    required: true,
   },
   hostDesc: {
     type: String,
     maxlength: 200,
     trim: true,
+    required: true,
   },
   startDate: {
     type: Date,
+    required: true,
   },
   endDate: {
     type: Date,
+    required: true,
   },
   studentCoordinator: [{ type: Schema.Types.ObjectId }],
   photo: {

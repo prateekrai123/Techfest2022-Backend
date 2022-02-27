@@ -14,7 +14,7 @@ exports.createCoordinator = (req, res, next) => {
     coordinatorType,
     coordinatorDesignation,
   } = req.body;
-  // return console.log(coordinatorName);
+  // return console.log(req.file.filename);
 
   const c1 = new Coordinator({
     coordinatorName: coordinatorName,
@@ -47,6 +47,9 @@ exports.getCoordinatorById = (req, res, next) => {
   const errors = validationResult(req);
 
   //here cid should 12 bytes or  24 hex char
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
 
   ///console.log(cid)
   Coordinator.findById(cid).then((c) => {
@@ -85,6 +88,11 @@ exports.getAllDetailsCoordinator = (req, res) => {
 };
 
 exports.updateGetCoordinator = (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
   const cid = req.params.cid;
   console.log(cid);
   Coordinator.findById(cid).then((err, c) => {
@@ -97,6 +105,11 @@ exports.updateGetCoordinator = (req, res, next) => {
 };
 
 exports.deleteCoordinator = (req, res, next) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
   const cid = req.params.cid;
 
   Coordinator.findByIdAndDelete(cid)
@@ -117,4 +130,8 @@ exports.deleteCoordinator = (req, res, next) => {
     .catch((err) => {
       failAction("Not found! ");
     });
+};
+
+exports.imagePost = (req, res) => {
+  return console.log(req.file.filename);
 };
