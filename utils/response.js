@@ -1,7 +1,7 @@
-exports.failAction = (error, statusCode) => {
+exports.failAction = (error) => {
   return { statusCode, data: null, error };
 };
 
-exports.successAction = (data, message, statusCode) => {
+exports.successAction = (data, message) => {
   return { statusCode, data, message };
 };
