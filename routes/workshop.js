@@ -12,7 +12,6 @@ router.get(
 );
 router.post(
   "/create",
-  upload.single("workshop"),
   [
     check("wsName", "Workshop name required!"),
     check("wsDesc", "Workshop name required!"),
@@ -21,6 +20,7 @@ router.post(
     check("startDate", "Workshop name required!"),
     check("endDate", "Workshop name required!"),
   ],
+  upload.single("workshop"),
   workshopController.createWorkshop
 );
 

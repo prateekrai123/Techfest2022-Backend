@@ -14,10 +14,9 @@ router.post(
       .custom((value) => {
         return Domain.findOne({ domainName: value }).then((d) => {
           if (d) {
-            throw Promise.reject("Domain already exits!");
+            throw new Error("Domain already exits!");
           }
         });
-        // return throw new Error(value);
       }),
   ],
   upload.single("domain"),
