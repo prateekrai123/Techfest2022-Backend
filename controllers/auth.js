@@ -62,7 +62,7 @@ exports.signUp = async (req, res) => {
   }
 
   if (await User.findOne({ email: req.body.email })) {
-    return res.status(400).json(failAction("The Email is already registered"));
+    return res.status(208).json(failAction("The email is already registered"));
   }
 
   const refferalCode = req.body.referralCode;
@@ -124,16 +124,13 @@ exports.signUp = async (req, res) => {
             { $set: { referrals: referrels } },
             (err, user) => {
               if (err || !user) {
-                console.log("Inserted");
                 return res
                   .status(400)
                   .json(failAction("Not able to update referrals. Try again"));
               }
             }
           );
-        } catch (err) {
-          console.log(err);
-        }
+        } catch (err) {}
       });
     } catch (err) {
       return res.status(400).json(failAction("Something went wrong"));
@@ -149,7 +146,7 @@ exports.signUp = async (req, res) => {
         .status(400)
         .json(failAction("Error in SignUp. Some error occurred"));
     } else {
-      return res.status(200).json(successAction("The user is inserted"));
+      return res.status(201).json(successAction("The user is inserted", user));
     }
   });
 };
