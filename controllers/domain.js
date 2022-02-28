@@ -11,16 +11,15 @@ const fileHelper = require("../utils/file");
 
 exports.createDomain = (req, res) => {
   // console.log(req.file);
-  const { domainName, domainInfo, studentCoordinator, facultyCoordinator } =
-    req.body;
-
-  //const dn = req.body.domainName;
-
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
     return res.status(422).send("sholdnt be empty");
   }
 
+  const { domainName, domainInfo, studentCoordinator, facultyCoordinator } =
+    req.body;
+
+  //const dn = req.body.domainName;
   //splitting through ,
   let studentCoordinatorArr = studentCoordinator.split(",");
   let facultyCoordinatorArr = facultyCoordinator.split(",");
