@@ -27,6 +27,7 @@ exports.getWorkshop = (req, res) => {
 };
 
 exports.createWorkshop = (req, res) => {
+  console.log("clicked");
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
@@ -42,46 +43,48 @@ exports.createWorkshop = (req, res) => {
     endDate,
     studentCoordinator,
   } = req.body;
-  let studentCoordinatorArr = studentCoordinator.split(",");
-  Workshop.findOne({ workshopName: wsName }, (err, w) => {
-    if (err) {
-      return res.status(422).json(failAction(err));
-    }
-    if (w) {
-      const pathImg = "upload/images/" + req.file.filename;
-      fileHelper.deleteFiles(pathImg);
-      return res.status(422).json(failAction("Workshop already exists", 422));
-    } else {
-      const w1 = new Workshop({
-        workshopName: wsName,
-        wsDesc: wsDesc,
-        hostName: hostName,
-        hostDesc: hostDesc,
-        startDate: startDate,
-        endDate: endDate,
-        studentCoordinator: studentCoordinatorArr,
-        photo: req.file.filename,
-      });
-      try {
-        w1.save((err, w1) => {
-          if (err || !w1) {
-            return res.status(400).json({
-              error: err,
-            });
-          } else {
-            return res
-              .status(201)
-              .json(successAction(w1, "Workshop created successfully!", 201));
-          }
-        });
-      } catch (err) {
-        return res.status(400).json(
-          failAction(err, 400)
-          // error: err,
-        );
-      }
-    }
-  });
+
+  console.log(wsName, studentCoordinator);
+  //let studentCoordinatorArr = studentCoordinator.split(",");
+  // Workshop.findOne({ workshopName: wsName }, (err, w) => {
+  //   if (err) {
+  //     return res.status(422).json(failAction(err));
+  //   }
+  //   if (w) {
+  //     const pathImg = "upload/images/" + req.file.filename;
+  //     fileHelper.deleteFiles(pathImg);
+  //     return res.status(422).json(failAction("Workshop already exists", 422));
+  //   } else {
+  //     const w1 = new Workshop({
+  //       workshopName: wsName,
+  //       wsDesc: wsDesc,
+  //       hostName: hostName,
+  //       hostDesc: hostDesc,
+  //       startDate: startDate,
+  //       endDate: endDate,
+  //       // studentCoordinator: studentCoordinatorArr,
+  //       photo: req.file.filename,
+  //     });
+  //     try {
+  //       w1.save((err, w1) => {
+  //         if (err || !w1) {
+  //           return res.status(400).json({
+  //             error: err,
+  //           });
+  //         } else {
+  //           return res
+  //             .status(201)
+  //             .json(successAction(w1, "Workshop created successfully!", 201));
+  //         }
+  //       });
+  //     } catch (err) {
+  //       return res.status(400).json(
+  //         failAction(err, 400)
+  //         // error: err,
+  //       );
+  //     }
+  //   }
+  // });
 };
 
 exports.getAllWokshop = (req, res) => {
