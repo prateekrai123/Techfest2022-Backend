@@ -18,6 +18,9 @@ router.post(
           }
         });
       }),
+    check("domainInfo", "Domain Info required!"),
+    check("studentCoordinator", "Student coordinator required!"),
+    check("facultyCoordinator", "Faculty coordinator required!"),
   ],
   upload.single("domain"),
   domainController.createDomain
@@ -29,6 +32,16 @@ router.get(
   domainController.getDomain
 );
 
-router.post("/img", upload.single("lola"), domainController.imagePost);
+router.delete(
+  "/del/:wId",
 
+  [
+    check("wId", "Id should be proper").custom((value) => {
+      if (value.length !== 12) {
+        throw new Error("Id should be proper!");
+      }
+    }),
+  ],
+  domainController.deleteDomain
+);
 module.exports = router;
