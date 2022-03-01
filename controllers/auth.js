@@ -22,12 +22,12 @@ exports.signIn = async (req, res) => {
   User.findOne({ email }, async (err, user) => {
     if (err || !user) {
       return res.status(404).json({
-        error: failAction("The email is not registered"),
+        error: failAction("The email is not registered", 404),
       });
     }
 
     if (!user.isVerified) {
-      return res.status(400).json(failAction("The user is not verified"));
+      return res.status(400).json(failAction("The user is not verified", 400));
     }
 
     try {
@@ -38,15 +38,11 @@ exports.signIn = async (req, res) => {
           process.env.ACCESS_TOKEN_SECRET
         );
         res.cookie("token", token, { expire: new Date() + 1000 });
-        return res.status(200).json(
-          successAction({
-            user: {
-              user,
-            },
-          })
-        );
+        return res.status(200).json(successAction(user, "Succeess!", 200));
       } else {
-        return res.status(400).json(failAction("The credentials are wrong"));
+        return res
+          .status(400)
+          .json(failAction("The credentials are wrong", 400));
       }
     } catch (error) {
       return res.status(500);

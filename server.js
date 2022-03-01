@@ -14,13 +14,13 @@ const error404 = require("./controllers/error404");
 require("dotenv").config();
 
 const app = express();
-app.use(cors());
 
 //set
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json()); // application/json
-app.set("view engine", "ejs");
 app.use(express.static("public"));
+app.use(cors());
+app.set("view engine", "ejs");
 
 app.use("/profile", express.static("upload/images"));
 
