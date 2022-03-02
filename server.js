@@ -26,7 +26,7 @@ const data = {
   optionSuccessStatus: 200,
 };
 
-app.use(cors(), data);
+app.use(cors(data));
 app.set("view engine", "ejs");
 
 app.use("/profile", express.static("upload/images"));
