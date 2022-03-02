@@ -19,7 +19,14 @@ const app = express();
 app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json()); // application/json
 app.use(express.static("public"));
-app.use(cors());
+
+const data = {
+  origin: "*",
+  credentials: true, //access-control-allow-credentials:true
+  optionSuccessStatus: 200,
+};
+
+app.use(cors(), data);
 app.set("view engine", "ejs");
 
 app.use("/profile", express.static("upload/images"));
