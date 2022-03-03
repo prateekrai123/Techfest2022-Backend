@@ -10,6 +10,7 @@ const {
   forgotPassword,
   changeForgotPassword,
   changePassword,
+  pushEvent,
 } = require("../controllers/auth");
 
 var router = express.Router();
