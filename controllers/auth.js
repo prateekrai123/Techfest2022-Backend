@@ -135,6 +135,26 @@ exports.signUp = async (req, res) => {
 
   const user = new User(payload);
 
+  try {
+    const token = crypto.randomBytes(32).toString("hex");
+
+    await verifyToken({
+      token: token,
+      email: req.body.email,
+    }).save();
+
+    const uri = `http://api.techfestsliet.com/verifyUser/${token}`;
+
+    mail.sendMail({
+      to: req.body.email,
+      subject: "Verification Email",
+      html: `<h3>Click on the link to verify your email: <br></h3>
+      <p><a href=${uri}>Click here</a></p>`,
+    });
+  } catch (err) {
+    return res.status(400).json(failAction(err));
+  }
+
   user.save((err, user) => {
     if (err) {
       console.log(err);
@@ -170,7 +190,7 @@ exports.verify = async (req, res) => {
         email: req.body.email,
       }).save();
 
-      const uri = `http://localhost:4000/verifyUser/${token}`;
+      const uri = `http://api.techfestsliet.com/verifyUser/${token}`;
 
       mail.sendMail({
         to: req.body.email,
