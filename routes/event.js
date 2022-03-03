@@ -1,5 +1,6 @@
 const { check } = require("express-validator");
 const { addEvents, getEvents, getEventById } = require("../controllers/events");
+const upload = require("../utils/upload");
 
 const router = require("express").Router();
 
@@ -12,6 +13,7 @@ router.post(
     check("time", "time is required"),
     check("studentCoordinator", "studentCoordinator is required"),
   ],
+  upload.single("photo"),
   addEvents
 );
 

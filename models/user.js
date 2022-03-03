@@ -85,13 +85,13 @@ const userSchema = mongoose.Schema({
   },
   eventsParticipated: [
     {
-      type: ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Event",
     },
   ],
   workshopsParticipated: [
     {
-      type: ObjectId,
+      type: mongoose.Schema.Types.ObjectId,
       ref: "Workshop",
     },
   ],

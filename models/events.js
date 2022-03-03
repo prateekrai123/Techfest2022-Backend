@@ -25,7 +25,7 @@ const EventSchema = new mongoose.Schema({
   },
   studentCoordinator: {
     type: ObjectId,
-    required: true,
+    // required: true,
     ref: "Coordinator",
   },
 });

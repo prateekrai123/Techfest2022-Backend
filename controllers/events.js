@@ -9,7 +9,8 @@ module.exports.addEvents = (req, res) => {
     return res.status(422).json({ errors: errors.array() });
   }
 
-  const { name, description, photo, date, time, studentCoordinator } = req.body;
+  const { name, description, date, time, studentCoordinator } = req.body;
+  const photo = req.file.filename;
 
   Event.findOne({ name: name }, (err, event) => {
     if (err) {
