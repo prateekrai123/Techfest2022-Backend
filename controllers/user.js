@@ -1,4 +1,5 @@
 const { failAction, successAction } = require("../utils/response");
+const User = require("../models/user");
 
 module.exports.getUserById = (req, res) => {
   const errors = validationResult(req);
