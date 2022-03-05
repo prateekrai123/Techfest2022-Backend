@@ -6,6 +6,10 @@ const TeamSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
+  verifyString: {
+    type: String,
+    required: true,
+  },
   members: [
     {
       id: {
@@ -32,7 +36,7 @@ const TeamSchema = new mongoose.Schema({
     required: true,
     default: true,
   },
-  event: {
+  eventId: {
     type: ObjectId,
     required: true,
     ref: "Event",

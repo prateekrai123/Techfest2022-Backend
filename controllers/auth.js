@@ -79,11 +79,11 @@ exports.signUp = async (req, res) => {
           email: req.body.email,
           name: req.body.name,
           verificationCode: uuid.v4(),
-          password: encryptedPassword.toString,
+          password: encryptedPassword,
           collegeName: "Sant Longowal Institute of Engineering and Technology",
           userId: userId,
-          regNo: eArr[0],
           hasPaidEntry: true,
+          regNo: eArr[0],
           referralCode: referralCode,
         },
       };

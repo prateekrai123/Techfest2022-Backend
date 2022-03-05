@@ -34,6 +34,7 @@ exports.sendMail = async (data) => {
       (err, log) => {
         if (err) {
           console.log("Error while sending mail");
+          console.log(err);
         } else {
           console.log(success, log);
         }

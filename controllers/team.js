@@ -1,7 +1,8 @@
 const User = require("../models/user");
 const Team = require("../models/team");
 const { sendMail } = require("../utils/mail");
-const { failAction } = require("../utils/response");
+const { failAction, successAction } = require("../utils/response");
+const { validationResult } = require("express-validator");
 
 module.exports.createTeam = async (req, res) => {
   const errors = validationResult(req);
@@ -74,11 +75,19 @@ module.exports.addTeamMember = async (req, res) => {
 
       const uri = `https://api.techfestsliet.com/team/verify/${team.verifyString}`;
 
-      sendMail({
-        to: req.body.email,
-        subject: "Verification Email",
-        html: `<h3>Click on the link to verify your team Participation: <br></h3>
-          <p><a href=${uri}>Click here</a></p>`,
+      console.log(team);
+
+      User.findOne({ _id: memberId }, (err, user) => {
+        if (err || !user) {
+          return res.status(400).json(failAction("User not found"));
+        }
+
+        sendMail({
+          to: user.email,
+          subject: "Verification Email",
+          html: `<h3>Click on the link to verify your email: <br></h3>
+            <p><a href=${uri}>Click here</a></p>`,
+        });
       });
 
       return res.status(201).json(successAction(team));
