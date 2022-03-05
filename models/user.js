@@ -83,13 +83,17 @@ const userSchema = mongoose.Schema({
     type: Number,
     default: 0,
   },
-  eventsParticipated: [
+  hapPaidEntry: {
+    type: Boolean,
+    default: false,
+  },
+  events: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Event",
     },
   ],
-  workshopsParticipated: [
+  workshops: [
     {
       type: mongoose.Schema.Types.ObjectId,
       ref: "Workshop",
