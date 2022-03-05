@@ -132,3 +132,56 @@ module.exports.pushWorkshop = async (req, res) => {
     }
   );
 };
+
+module.exports.updateUser = (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json(failAction(errors.array()[0]));
+  }
+
+  const {
+    name,
+    email,
+    phone,
+    dob,
+    collegeName,
+    instituteAddress,
+    course,
+    branchOfStudy,
+    yearOfStudy,
+    whatsappPhoneNumber,
+    telegramPhoneNumber,
+  } = req.body;
+
+  if (
+    !name ||
+    !email ||
+    !phone ||
+    !dob ||
+    !collegeName ||
+    !instituteAddress ||
+    !course ||
+    !branchOfStudy ||
+    !yearOfStudy ||
+    !whatsappPhoneNumber ||
+    !telegramPhoneNumber
+  ) {
+    req.body["isProfileComplete"] = false;
+  } else {
+    req.body["isProfileComplete"] = true;
+  }
+
+  User.findOneAndUpdate(
+    { _id: req.user._id },
+    { $set: req.body },
+    { new: true, useFindAndModify: false },
+    (err, user) => {
+      if (err || !user) {
+        return res.status(400).json(failAction("Cannot update user"));
+      }
+
+      return res.status(201).json(successAction(user));
+    }
+  );
+};

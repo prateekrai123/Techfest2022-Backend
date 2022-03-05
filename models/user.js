@@ -47,7 +47,11 @@ const userSchema = mongoose.Schema({
     trim: true,
   },
   course: {
-    //Name of course like B.E., B.Tech etc..
+    type: String,
+    maxlength: 100,
+    trim: true,
+  },
+  branchOfStudy: {
     type: String,
     maxlength: 100,
     trim: true,
@@ -79,6 +83,7 @@ const userSchema = mongoose.Schema({
     type: Boolean,
     default: false,
   },
+
   role: {
     type: Number,
     default: 0,
