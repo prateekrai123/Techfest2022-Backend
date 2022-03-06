@@ -1,5 +1,23 @@
 const { failAction, successAction } = require("../utils/response");
 const User = require("../models/user");
+const { validationResult } = require("express-validator");
+
+module.exports.getReferralCode = (req, res) => {
+  const errors = validationResult(req);
+
+  if (!errors.isEmpty()) {
+    return res.status(400).json(failAction(errors.array()[0]));
+  }
+
+  const { _id } = req.body.id;
+  User.findById(_id, (err, user) => {
+    if (err || !user) {
+      return res.status(404).status(failAction("User not found"));
+    }
+
+    return res.status(201).json(successAction(user.referralCode));
+  });
+};
 
 module.exports.getUserById = (req, res) => {
   const errors = validationResult(req);
@@ -8,7 +26,7 @@ module.exports.getUserById = (req, res) => {
     return res.status(400).json(failAction(errors.array()[0]));
   }
 
-  const { _id } = req.body.id;
+  const { _id } = req.user._id;
 
   User.findOne({ _id: _id }, (err, user) => {
     if (err || !user) {
