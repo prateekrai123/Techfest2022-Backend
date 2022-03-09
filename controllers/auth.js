@@ -13,7 +13,8 @@ exports.signIn = async (req, res) => {
 
   if (!errors.isEmpty) {
     return res.status(400).json({
-      error: failAction(errors.array()[0].msg),
+      message: errors.array()[0].msg,
+      isError: true,
     });
   }
 
@@ -60,11 +61,17 @@ exports.signUp = async (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty) {
-    return res.status(422).json(failAction(errors.array()[0].msg));
+    return res.status(422).json({
+      message: errors.array()[0].msg,
+      isError: true,
+    });
   }
 
   if (await User.findOne({ email: req.body.email })) {
-    return res.status(208).json(failAction("The email is already registered"));
+    return res.status(208).json({
+      message: "The email is already registered",
+      isError: true,
+    });
   }
 
   const refferalCode = req.body.referralCode;
@@ -106,7 +113,9 @@ exports.signUp = async (req, res) => {
       };
     }
   } catch (error) {
-    return res.status(500).json(failAction("Something went wrong"));
+    return res
+      .status(208)
+      .json({ isError: true, message: "Something went wrong" });
   }
 
   if (refferalCode) {
@@ -115,8 +124,8 @@ exports.signUp = async (req, res) => {
       User.findOne({ referralCode: refferalCode }, async (err, user1) => {
         if (err || !user) {
           return res
-            .status(400)
-            .json(failAction("Referral code is invalid" + err));
+            .status(208)
+            .json({ isError: true, message: "Referral code is invalid" });
         }
         referrels = user.referrals + 1;
         uid = user1.userId;
@@ -126,16 +135,20 @@ exports.signUp = async (req, res) => {
             { $set: { referrals: referrels } },
             (err, user) => {
               if (err || !user) {
-                return res
-                  .status(400)
-                  .json(failAction("Not able to update referrals. Try again"));
+                return res.status(208).json({
+                  isError: true,
+                  message: "Not able to update referrals. Try again",
+                });
               }
             }
           );
         } catch (err) {}
       });
     } catch (err) {
-      return res.status(400).json(failAction("Something went wrong"));
+      return res.status(400).json({
+        message: "Something went wrong",
+        isError: true,
+      });
     }
   }
 
@@ -164,11 +177,15 @@ exports.signUp = async (req, res) => {
   user.save((err, user) => {
     if (err) {
       console.log(err);
-      return res
-        .status(400)
-        .json(failAction("Error in SignUp. Some error occurred"));
+      return res.status(400).json({
+        isError: true,
+        message: "Error in SignUp. Some error occurred",
+      });
     } else {
-      return res.status(201).json(successAction("The user is inserted", user));
+      user.password = null;
+      return res
+        .status(201)
+        .json({ isError: true, message: "The user is inserted", user: user });
     }
   });
 };
