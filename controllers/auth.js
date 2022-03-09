@@ -21,13 +21,17 @@ exports.signIn = async (req, res) => {
 
   User.findOne({ email }, async (err, user) => {
     if (err || !user) {
-      return res.status(404).json({
-        error: failAction("The email is not registered", 404),
+      return res.status(208).json({
+        isError: true,
+        message: "The email is not register!",
       });
     }
 
     if (!user.isVerified) {
-      return res.status(400).json(failAction("The user is not verified", 400));
+      return res.status(208).json({
+        isError: true,
+        message: "The user is not verified!",
+      });
     }
 
     try {
@@ -35,14 +39,16 @@ exports.signIn = async (req, res) => {
       if (condition) {
         const token = await jwt.sign(
           { id: user._id, role: user.role },
-          process.env.ACCESS_TOKEN_SECRET
+          process.env.ACCESS_TOKEN_SECRET,
+          { expiresIn: "1h" }
         );
         res.cookie("token", token, { expire: new Date() + 1000 });
-        return res.status(200).json(successAction(user, "Succeess!", 200));
+        return res.status(200).json({ token: token, userId: user._id });
       } else {
-        return res
-          .status(400)
-          .json(failAction("The credentials are wrong", 400));
+        return res.status(208).json({
+          isError: true,
+          message: "The credentials are wrong!",
+        });
       }
     } catch (error) {
       return res.status(500);
