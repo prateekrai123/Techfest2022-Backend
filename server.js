@@ -10,6 +10,7 @@ const authRoutes = require("./routes/auth");
 const eventRoutes = require("./routes/event");
 const teamRoutes = require("./routes/team");
 const userRoutes = require("./routes/user");
+const sponsorRoutes = require("./routes/sponsors");
 const error404 = require("./controllers/error404");
 
 require("dotenv").config();
@@ -37,6 +38,7 @@ app.use("/workshop", workshop);
 app.use("/", authRoutes);
 app.use("/event", eventRoutes);
 app.use("/team", teamRoutes);
+app.use("/sponsor", sponsorRoutes);
 app.use("/", userRoutes);
 
 app.get("/", (req, res) => {
