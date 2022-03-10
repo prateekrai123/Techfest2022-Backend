@@ -10,6 +10,7 @@ const authRoutes = require("./routes/auth");
 const eventRoutes = require("./routes/event");
 const teamRoutes = require("./routes/team");
 const userRoutes = require("./routes/user");
+const sponsorRoutes = require("./routes/sponsors");
 const error404 = require("./controllers/error404");
 
 require("dotenv").config();
