@@ -36,7 +36,7 @@ module.exports.getUserById = (req, res) => {
     user.password = null;
 
     return res
-      .status(201)
+      .status(200)
       .json({ isError: false, isSuccess: true, user: user });
   });
 };
