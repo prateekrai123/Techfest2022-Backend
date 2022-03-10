@@ -1,6 +1,7 @@
 const { failAction, successAction } = require("../utils/response");
 const User = require("../models/user");
 const { validationResult } = require("express-validator");
+const { findById } = require("../models/user");
 
 module.exports.getReferralCode = (req, res) => {
   const errors = validationResult(req);
@@ -20,20 +21,23 @@ module.exports.getReferralCode = (req, res) => {
 };
 
 module.exports.getUserById = (req, res) => {
-  const errors = validationResult(req);
+  // const errors = validationResult(req);
 
-  if (!errors.isEmpty()) {
-    return res.status(400).json(failAction(errors.array()[0]));
-  }
-
-  const { _id } = req.user._id;
+  // if (!errors.isEmpty()) {
+  //   return res.status(400).json(failAction(errors.array()[0]));
+  // }
+  const _id = req.userId;
+  // const { _id } = req.user._id;
 
   User.findOne({ _id: _id }, (err, user) => {
     if (err || !user) {
-      return res.status(404).status(failAction("User not found"));
+      return res.status(208).json({ isError: true, message: "Not auth" });
     }
+    user.password = null;
 
-    return res.status(201).json(successAction(user));
+    return res
+      .status(201)
+      .json({ isError: false, isSuccess: true, user: user });
   });
 };
 
@@ -78,9 +82,13 @@ module.exports.pushEvent = async (req, res) => {
     return res.status(400).json(failAction(errors.array()[0]));
   }
 
-  const { event } = req.body;
+  const { event, userId } = req.body;
 
-  const user = req.user;
+  const user = await findById(userId);
+
+  if (!user) {
+    return res.status(208).json({ isError: true, message: "User not found!" });
+  }
 
   if (!user.hasPaidEntry) {
     return res.status(400).json(failAction("You have to pay entry fee first"));

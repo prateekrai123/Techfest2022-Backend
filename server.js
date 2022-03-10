@@ -37,7 +37,7 @@ app.use("/workshop", workshop);
 app.use("/", authRoutes);
 app.use("/event", eventRoutes);
 app.use("/team", teamRoutes);
-app.use("/", userRoutes);
+app.use("/user", userRoutes);
 
 app.get("/", (req, res) => {
   res.send("Welcome! u have unlocked dev mode");

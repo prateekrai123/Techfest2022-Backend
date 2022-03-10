@@ -8,12 +8,13 @@ const {
   pushWorkshop,
   getReferralCode,
 } = require("../controllers/user");
+const isAuth = require("../middleware/isAuth");
 
 const router = require("express").Router();
 
 router.get("/allUsers", getAllUsers);
 
-router.get("/getUserById", [check("id", "id is required")], getUserById);
+router.get("/getUserById", isAuth, getUserById);
 
 router.get(
   "/getUserByEmail",

@@ -11,7 +11,7 @@ const mail = require("../utils/mail");
 exports.signIn = async (req, res) => {
   const errors = validationResult(req);
 
-  if (!errors.isEmpty) {
+  if (!errors.isEmpty()) {
     return res.status(400).json({
       message: errors.array()[0].msg,
       isError: true,
@@ -44,7 +44,9 @@ exports.signIn = async (req, res) => {
           { expiresIn: "1h" }
         );
         res.cookie("token", token, { expire: new Date() + 1000 });
-        return res.status(200).json({ token: token, userId: user._id });
+        return res
+          .status(200)
+          .json({ token: token, userId: user._id, isSuccess: true });
       } else {
         return res.status(208).json({
           isError: true,
@@ -122,12 +124,12 @@ exports.signUp = async (req, res) => {
     try {
       let referrels, uid;
       User.findOne({ referralCode: refferalCode }, async (err, user1) => {
-        if (err || !user) {
+        if (err || !user1) {
           return res
             .status(208)
             .json({ isError: true, message: "Referral code is invalid" });
         }
-        referrels = user.referrals + 1;
+        referrels = user1.referrals + 1;
         uid = user1.userId;
         try {
           User.findOneAndUpdate(
@@ -162,7 +164,7 @@ exports.signUp = async (req, res) => {
       email: req.body.email,
     }).save();
 
-    const uri = `http://api.techfestsliet.com/verifyUser/${token}`;
+    const uri = `https://api.techfestsliet.com/verifyUser/${token}`;
 
     mail.sendMail({
       to: req.body.email,
