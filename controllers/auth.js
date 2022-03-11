@@ -122,33 +122,22 @@ exports.signUp = async (req, res) => {
 
   if (refferalCode) {
     try {
-      let referrels, uid;
-      User.findOne({ referralCode: refferalCode }, async (err, user1) => {
-        if (err || !user1) {
-          return res
-            .status(208)
-            .json({ isError: true, message: "Referral code is invalid" });
+      User.findOneAndUpdate(
+        { referralCode: refferalCode },
+        { $inc: { referrals: 1 } },
+        (err, user) => {
+          console.log(user);
+          if (err) {
+            return res.status(208).json({
+              isError: true,
+              message: "The referral code is invalid",
+            });
+          }
         }
-        referrels = user1.referrals + 1;
-        uid = user1.userId;
-        try {
-          User.findOneAndUpdate(
-            { userId: uid },
-            { $set: { referrals: referrels } },
-            (err, user) => {
-              if (err || !user) {
-                return res.status(208).json({
-                  isError: true,
-                  message: "Not able to update referrals. Try again",
-                });
-              }
-            }
-          );
-        } catch (err) {}
-      });
+      );
     } catch (err) {
-      return res.status(400).json({
-        message: "Something went wrong",
+      return res.status(200).json({
+        message: "The referral code is invalid",
         isError: true,
       });
     }
@@ -177,18 +166,16 @@ exports.signUp = async (req, res) => {
   }
 
   user.save((err, user) => {
-    if (err) {
+    if (err || !user) {
       console.log(err);
       return res.status(400).json({
         isError: true,
         message: "Error in SignUp. Some error occurred",
       });
-    } else {
-      user.password = null;
-      return res
-        .status(201)
-        .json({ isError: true, message: "The user is inserted", user: user });
     }
+    return res
+      .status(201)
+      .json({ isError: false, message: "The user is inserted", user: user });
   });
 };
 
@@ -402,6 +389,20 @@ exports.changePassword = async (req, res) => {
       );
     } catch (err) {
       failAction(err);
+    }
+  });
+};
+
+//middlewares
+
+module.exports.isValidReferral = (req, res, next) => {
+  User.findOne({ referralCode: req.body.referralCode }, (err, user) => {
+    if (err || !user) {
+      return res
+        .status(200)
+        .json({ isError: true, message: "Invalid referral code" });
+    } else {
+      next();
     }
   });
 };

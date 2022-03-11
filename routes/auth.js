@@ -10,7 +10,7 @@ const {
   forgotPassword,
   changeForgotPassword,
   changePassword,
-  pushEvent,
+  isValidReferral,
 } = require("../controllers/auth");
 
 var router = express.Router();
@@ -33,6 +33,7 @@ router.post(
         }
       }),
   ],
+  isValidReferral,
   signUp
 );
 
