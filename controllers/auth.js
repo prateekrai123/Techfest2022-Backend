@@ -44,9 +44,12 @@ exports.signIn = async (req, res) => {
           { expiresIn: "1h" }
         );
         res.cookie("token", token, { expire: new Date() + 1000 });
-        return res
-          .status(200)
-          .json({ token: token, userId: user._id, isSuccess: true });
+        return res.status(200).json({
+          token: token,
+          userId: user._id,
+          isSuccess: true,
+          userRole: user.role,
+        });
       } else {
         return res.status(208).json({
           isError: true,
