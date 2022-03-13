@@ -84,6 +84,9 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    institution: {
+      type: String,
+    },
 
     role: {
       type: Number,

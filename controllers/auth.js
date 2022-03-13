@@ -12,7 +12,7 @@ exports.signIn = async (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(400).json({
+    return res.status(208).json({
       message: errors.array()[0].msg,
       isError: true,
     });
@@ -63,15 +63,15 @@ exports.signIn = async (req, res) => {
 };
 
 exports.signUp = async (req, res) => {
-  const errors = validationResult(req);
+  // const errors = validationResult(req);
 
-  if (!errors.isEmpty) {
-    return res.status(422).json({
-      message: errors.array()[0].msg,
-      isError: true,
-    });
-  }
-
+  // if (!errors.isEmpty()) {
+  //   return res.status(400).json({
+  //     message: errors.array()[0].msg,
+  //     isError: true,
+  //   });
+  // }
+  console.log(req.body.email);
   if (await User.findOne({ email: req.body.email })) {
     return res.status(208).json({
       message: "The email is already registered",
@@ -103,6 +103,7 @@ exports.signUp = async (req, res) => {
           hasPaidEntry: true,
           regNo: eArr[0],
           referralCode: referralCode,
+          institution: "sliet",
         },
       };
     } else {
@@ -114,6 +115,7 @@ exports.signUp = async (req, res) => {
           referralCode: referralCode,
           password: encryptedPassword,
           verificationCode: uuid.v4(),
+          institution: "other",
         },
       };
     }
@@ -123,6 +125,7 @@ exports.signUp = async (req, res) => {
       .json({ isError: true, message: "Something went wrong" });
   }
 
+  // console.log(refferalCode)
   if (refferalCode) {
     try {
       User.findOneAndUpdate(
@@ -171,14 +174,14 @@ exports.signUp = async (req, res) => {
   user.save((err, user) => {
     if (err || !user) {
       console.log(err);
-      return res.status(400).json({
+      return res.status(208).json({
         isError: true,
         message: "Error in SignUp. Some error occurred",
       });
     }
     return res
       .status(201)
-      .json({ isError: false, message: "The user is inserted", user: user });
+      .json({ message: "The user is inserted", user: user });
   });
 };
 
@@ -403,7 +406,7 @@ module.exports.isValidReferral = (req, res, next) => {
     if (err || !user) {
       return res
         .status(200)
-        .json({ isError: true, message: "Invalid referral code" });
+        .json({ isError: true, message: "Invalid referrahjl code" });
     } else {
       next();
     }

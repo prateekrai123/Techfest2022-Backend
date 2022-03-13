@@ -11,6 +11,7 @@ const eventRoutes = require("./routes/event");
 const teamRoutes = require("./routes/team");
 const userRoutes = require("./routes/user");
 const sponsorRoutes = require("./routes/sponsors");
+const adminRoutes = require("./routes/admin");
 const error404 = require("./controllers/error404");
 
 require("dotenv").config();
@@ -39,6 +40,7 @@ app.use("/", authRoutes);
 app.use("/event", eventRoutes);
 app.use("/team", teamRoutes);
 app.use("/user", userRoutes);
+app.use("/admin", adminRoutes);
 
 app.get("/", (req, res) => {
   res.send("Welcome! u have unlocked dev mode");
