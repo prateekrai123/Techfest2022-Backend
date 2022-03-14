@@ -33,7 +33,6 @@ router.post(
         }
       }),
   ],
-  isValidReferral,
   signUp
 );
 
