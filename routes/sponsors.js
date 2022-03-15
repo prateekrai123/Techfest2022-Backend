@@ -8,7 +8,10 @@ router.get("/getAllSponsors", getAllSponsors);
 
 router.post(
   "/addSponsor",
-  [check("name", "name is required"), check("link", "link is required")],
+  [
+    check("name", "name is required").not().isEmpty(),
+    check("link", "link is required"),
+  ],
   upload.single("sponserImg"),
   addSponsor
 );

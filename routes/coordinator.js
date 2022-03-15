@@ -23,6 +23,8 @@ router.get(
 );
 
 router.get("/get-all-details", coordinatorController.getAllDetailsCoordinator);
+router.get("/getStudetntCoordniator", coordinatorController.getStudentCo);
+router.get("/getFacultyCoordniator", coordinatorController.getFacultyCo);
 
 router.put(
   "/update/:cid",

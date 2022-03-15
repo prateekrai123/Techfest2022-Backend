@@ -15,9 +15,9 @@ router.post(
   [
     check("wsName", "Workshop name required!"),
     check("wsDesc", "Workshop name required!"),
-    check("hostDesc", "Workshop name required!"),
-    check("hostName", "Workshop name required!"),
-    check("startDate", "Workshop name required!"),
+    check("wsDesc", "Workshop name required!"),
+    check("studentCoordinator", "Student coordinator names are required!"),
+    check("facultyCoordinator", "Faculty coordinator name are required!"),
     check("endDate", "Workshop name required!"),
   ],
   upload.single("workshop"),

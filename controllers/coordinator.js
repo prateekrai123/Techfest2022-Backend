@@ -135,3 +135,29 @@ exports.deleteCoordinator = (req, res, next) => {
 exports.imagePost = (req, res) => {
   return console.log(req.file.filename);
 };
+
+exports.getStudentCo = (req, res, next) => {
+  Coordinator.find({ coordinatorType: "student" }).then((c) => {
+    if (!c) {
+      return res
+        .status(208)
+        .json({ isError: true, title: "Error", message: "Not found" });
+    }
+    return res
+      .status(201)
+      .json({ isError: false, title: "Success", message: "found", c: c });
+  });
+};
+
+exports.getFacultyCo = (req, res, next) => {
+  Coordinator.find({ coordinatorType: "faculty" }).then((c) => {
+    if (!c) {
+      return res
+        .status(208)
+        .json({ isError: true, title: "Error", message: "Not found!" });
+    }
+    return res
+      .status(201)
+      .json({ isError: false, title: "Success", message: "found", c: c });
+  });
+};

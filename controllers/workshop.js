@@ -31,62 +31,77 @@ exports.createWorkshop = (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
+    return res
+      .status(208)
+      .json({ isError: true, title: "Error", message: errors.array() });
+  }
+
+  if (!req.file) {
+    return res
+      .status(208)
+      .json({ isError: true, title: "Error", message: "Image is not given" });
   }
 
   const {
     wsName,
     wsDesc,
-    hostDesc,
-    hostName,
+    wLinkDrive,
     startDate,
     endDate,
     studentCoordinator,
+    facultyCoordinator,
   } = req.body;
 
-  //console.log(wsName, studentCoordinator);
+  // return console.log(facultyCoordinator, studentCoordinator);
   let studentCoordinatorArr = studentCoordinator.split(",");
-
-  //console.log(studentCoordinatorArr);
+  let facultyCoordinatorArr = facultyCoordinator.split(",");
 
   Workshop.findOne({ workshopName: wsName }, (err, w) => {
     if (err) {
-      return res.status(422).json(failAction(err, 422));
+      return res
+        .status(208)
+        .json({ isError: true, title: "Error", message: err });
     }
     if (w) {
       const pathImg = "upload/images/" + req.file.filename;
       fileHelper.deleteFiles(pathImg);
-      return res.status(422).json(failAction("Workshop already exists", 422));
+      return res.status(422).json({
+        isError: true,
+        title: "Error",
+        message: "Workshop already exists",
+      });
     } else {
       const w1 = new Workshop({
         workshopName: wsName,
         wsDesc: wsDesc,
-        hostName: hostName,
-        hostDesc: hostDesc,
         startDate: startDate,
+        wDriveLink: wLinkDrive,
         endDate: endDate,
         studentCoordinator: studentCoordinatorArr,
+        facultyCoordinator: facultyCoordinatorArr,
         photo: req.file.filename,
       });
       //   console.log(w1);
       try {
         w1.save((err, w1) => {
           if (err || !w1) {
-            return res.status(400).json({
-              error: err,
-            });
-          } else {
             return res
-              .status(201)
-              .json(successAction(w1, "Workshop created successfully!", 201));
+              .status(208)
+              .json({ isError: true, title: "Error", message: err });
+          } else {
+            return res.status(201).json({
+              isError: false,
+              title: "Success",
+              message: "Workshp created!",
+              workshop: w1,
+            });
             //  console.log("success");
           }
         });
       } catch (err) {
-        return res.status(400).json(
-          failAction(err, 400)
-          // error: err,
-        );
+        return res
+          .status(208)
+          .json({ isError: true, title: "Error", message: err });
       }
     }
   });
@@ -99,10 +114,9 @@ exports.getAllWokshop = (req, res) => {
         message: "Page not found! ",
       });
     }
-    res.status(200).json({
-      message: "succefully get all coordinators details ",
-      w,
-    });
+    res
+      .status(200)
+      .json({ isError: true, title: "Error", message: "fetched", data: w });
     // console.log(c)
   });
 };

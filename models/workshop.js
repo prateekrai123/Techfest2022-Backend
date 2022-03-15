@@ -18,14 +18,14 @@ const workshop = new Schema({
   hostName: {
     type: String,
     maxlength: 32,
-    trim: true,
-    required: true,
+  },
+  wDriveLink: {
+    type: String,
+    maxlength: 200,
   },
   hostDesc: {
     type: String,
     maxlength: 200,
-    trim: true,
-    required: true,
   },
   startDate: {
     type: Date,
@@ -36,6 +36,7 @@ const workshop = new Schema({
     required: true,
   },
   studentCoordinator: [{ type: Schema.Types.ObjectId }],
+  facultyCoordinator: [{ type: Schema.Types.ObjectId }],
   photo: {
     type: String,
   },

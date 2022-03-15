@@ -12,6 +12,15 @@ const EventSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  eventMode: {
+    type: String,
+    required: true,
+    trim: true,
+  },
+  domain: {
+    type: String,
+    trim: true,
+  },
   photo: {
     type: String,
   },
@@ -19,15 +28,13 @@ const EventSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
-  time: {
-    type: String,
-    required: true,
-  },
-  studentCoordinator: {
-    type: ObjectId,
-    // required: true,
-    ref: "Coordinator",
-  },
+  studentCoordinator: [
+    {
+      type: ObjectId,
+      required: true,
+      ref: "Coordinator",
+    },
+  ],
 });
 
 module.exports = mongoose.model("Event", EventSchema);

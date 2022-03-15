@@ -13,6 +13,7 @@ exports.signIn = async (req, res) => {
 
   if (!errors.isEmpty()) {
     return res.status(208).json({
+      title: "Error",
       message: errors.array()[0].msg,
       isError: true,
     });
@@ -24,6 +25,7 @@ exports.signIn = async (req, res) => {
     if (err || !user) {
       return res.status(208).json({
         isError: true,
+        title: "Error",
         message: "The email is not register!",
       });
     }
@@ -31,6 +33,7 @@ exports.signIn = async (req, res) => {
     if (!user.isVerified) {
       return res.status(208).json({
         isError: true,
+        title: "Error",
         message: "The user is not verified!",
       });
     }
@@ -53,6 +56,7 @@ exports.signIn = async (req, res) => {
       } else {
         return res.status(208).json({
           isError: true,
+          title: "Error",
           message: "The credentials are wrong!",
         });
       }
@@ -71,9 +75,10 @@ exports.signUp = async (req, res) => {
   //     isError: true,
   //   });
   // }
-  console.log(req.body.email);
+  // console.log(req.body.email);
   if (await User.findOne({ email: req.body.email })) {
     return res.status(208).json({
+      title: "Error",
       message: "The email is already registered",
       isError: true,
     });
@@ -122,7 +127,7 @@ exports.signUp = async (req, res) => {
   } catch (error) {
     return res
       .status(208)
-      .json({ isError: true, message: "Something went wrong" });
+      .json({ isError: true, title: "Error", message: "Something went wrong" });
   }
 
   // console.log(refferalCode)
@@ -136,6 +141,7 @@ exports.signUp = async (req, res) => {
           if (err) {
             return res.status(208).json({
               isError: true,
+              title: "Error",
               message: "The referral code is invalid",
             });
           }
@@ -143,6 +149,7 @@ exports.signUp = async (req, res) => {
       );
     } catch (err) {
       return res.status(200).json({
+        title: "Error",
         message: "The referral code is invalid",
         isError: true,
       });
@@ -176,12 +183,13 @@ exports.signUp = async (req, res) => {
       console.log(err);
       return res.status(208).json({
         isError: true,
+        title: "Error",
         message: "Error in SignUp. Some error occurred",
       });
     }
     return res
       .status(201)
-      .json({ message: "The user is inserted", user: user });
+      .json({ message: "The user is inserted", title: "Success" });
   });
 };
 

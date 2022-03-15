@@ -1,23 +1,60 @@
 const { validationResult } = require("express-validator");
 const Event = require("../models/events");
 const { successAction, failAction } = require("../utils/response");
+const fileHelper = require("../utils/file");
 
 module.exports.addEvents = (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
+  if (!req.file) {
+    return res
+      .status(208)
+      .json({ isError: true, title: "Error", message: "Image not given" });
   }
 
-  const { name, description, date, time, studentCoordinator } = req.body;
+  const errors = validationResult(req);
+
+  // return console.log(errors.array());
+  if (!errors.isEmpty()) {
+    if (req.file) {
+      const pathImg = "upload/images/" + req.file.filename;
+      fileHelper.deleteFiles(pathImg);
+    }
+    return res
+      .status(208)
+      .json({ isError: true, title: "Error", message: errors.array() });
+  }
+
+  const {
+    name,
+    description,
+    date,
+    time,
+    eventMode,
+    domain,
+    studentCoordinator,
+  } = req.body;
   const photo = req.file.filename;
+  let studentCoordinatorArr = studentCoordinator.split(",");
 
   Event.findOne({ name: name }, (err, event) => {
     if (err) {
-      return res.status(422).json(failAction(err));
+      if (req.file) {
+        const pathImg = "upload/images/" + req.file.filename;
+        fileHelper.deleteFiles(pathImg);
+      }
+      return res
+        .status(208)
+        .json({ isError: true, title: "Error", message: err });
     }
     if (event) {
-      return res.status(422).json(failAction("Event already exists"));
+      if (req.file) {
+        const pathImg = "upload/images/" + req.file.filename;
+        fileHelper.deleteFiles(pathImg);
+      }
+      return res.status(208).json({
+        isError: true,
+        title: "Error",
+        message: "Event already exists",
+      });
     } else {
       const payload = {
         name,
@@ -25,7 +62,9 @@ module.exports.addEvents = (req, res) => {
         photo,
         date,
         time,
-        studentCoordinator,
+        eventMode,
+        domain,
+        studentCoordinator: studentCoordinatorArr,
       };
 
       const event = new Event(payload);
@@ -33,34 +72,69 @@ module.exports.addEvents = (req, res) => {
       try {
         event.save((err, event) => {
           if (err || !event) {
-            return res.status(400).json({
+            if (req.file) {
+              const pathImg = "upload/images/" + req.file.filename;
+              fileHelper.deleteFiles(pathImg);
+            }
+            return res.status(208).json({
+              isError: true,
+              title: "Error",
+              message: "Error ocurd while saving db",
               error: err,
             });
           } else {
-            return res.status(200).json(successAction("Event is added"));
+            return res.status(200).json({
+              isError: false,
+              title: "Error",
+              message: "Event is added",
+            });
           }
         });
       } catch (err) {
-        return res.status(400).json({
-          error: err,
-        });
+        if (req.file) {
+          const pathImg = "upload/images/" + req.file.filename;
+          fileHelper.deleteFiles(pathImg);
+        }
+        return res
+          .status(208)
+          .json({ isError: true, title: "Error", message: err });
       }
     }
   });
 };
 
-module.exports.getEvents = (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(422).json({ errors: errors.array() });
-  }
-
+module.exports.getAllEvents = (req, res) => {
   Event.find({}, (err, events) => {
     if (err || !events) {
       return res.status(400).json(failAction(err));
     }
-    return res.status(200).json(successAction(events));
+    return res.status(200).json({
+      isError: false,
+      title: "Succes",
+      message: "succes",
+      data: events,
+    });
+  });
+};
+
+exports.getByDomain = (req, res, next) => {
+  const name = req.params.name.trim().toLowerCase();
+  //return console.log(name);
+  Event.find({ domain: name }).then((d) => {
+    if (!d) {
+      return res.status(200).json({
+        isError: true,
+        title: "Error",
+        message: "Not found",
+      });
+    }
+
+    return res.status(200).json({
+      isError: false,
+      title: "Succes",
+      message: "succes",
+      data: d,
+    });
   });
 };
 
