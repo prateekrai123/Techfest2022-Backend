@@ -67,15 +67,15 @@ exports.signIn = async (req, res) => {
 };
 
 exports.signUp = async (req, res) => {
-  // const errors = validationResult(req);
+  const errors = validationResult(req);
 
-  // if (!errors.isEmpty()) {
-  //   return res.status(400).json({
-  //     message: errors.array()[0].msg,
-  //     isError: true,
-  //   });
-  // }
-  // console.log(req.body.email);
+  if (!errors.isEmpty()) {
+    return res.status(200).json({
+      message: errors.array(),
+      isError: true,
+    });
+  }
+
   if (await User.findOne({ email: req.body.email })) {
     return res.status(208).json({
       title: "Error",
@@ -130,7 +130,6 @@ exports.signUp = async (req, res) => {
       .json({ isError: true, title: "Error", message: "Something went wrong" });
   }
 
-  // console.log(refferalCode)
   if (refferalCode) {
     try {
       User.findOneAndUpdate(
@@ -410,13 +409,17 @@ exports.changePassword = async (req, res) => {
 //middlewares
 
 module.exports.isValidReferral = (req, res, next) => {
-  User.findOne({ referralCode: req.body.referralCode }, (err, user) => {
-    if (err || !user) {
-      return res
-        .status(200)
-        .json({ isError: true, message: "Invalid referrahjl code" });
-    } else {
-      next();
-    }
-  });
+  if (req.body.referralCode == "" || !req.body.referralCode) {
+    next();
+  } else {
+    User.findOne({ referralCode: req.body.referralCode }, (err, user) => {
+      if (err || !user) {
+        return res
+          .status(200)
+          .json({ isError: true, message: "Invalid referral code" });
+      } else {
+        next();
+      }
+    });
+  }
 };

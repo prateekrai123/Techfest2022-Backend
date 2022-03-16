@@ -18,21 +18,20 @@ var router = express.Router();
 router.post(
   "/signUp",
   [
-    check("name", "Name should be more than 5 characters")
-      .trim()
-      .isLength({ min: 5 }),
+    check("name", "Name is required").trim(),
     check("email", "email is required").trim().isEmail().normalizeEmail(),
     check("password", "password should be at least 3 chars").isLength({
       min: 3,
     }),
-    check("confirmPassword")
-      .trim()
-      .custom((value, { req }) => {
-        if (value !== req.body.password) {
-          return Promise.reject("Password did not match!");
-        }
-      }),
+    // check("confirmPassword")
+    //   .trim()
+    //   .custom((value, { req }) => {
+    //     if (value !== req.body.password) {
+    //       return Promise.reject("Password did not match!");
+    //     }
+    //   }),
   ],
+  isValidReferral,
   signUp
 );
 
