@@ -9,7 +9,7 @@ router.get("/getAllSponsors", getAllSponsors);
 router.post(
   "/addSponsor",
   [
-    check("name", "name is required").not().isEmpty(),
+    check("name", "name is required").isEmpty(),
     check("link", "link is required"),
   ],
   upload.single("sponserImg"),

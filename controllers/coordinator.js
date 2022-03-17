@@ -6,7 +6,27 @@ const { json } = require("body-parser");
 const { failAction, successAction } = require("../utils/response");
 const fileHelper = require("../utils/file");
 
-exports.createCoordinator = (req, res, next) => {
+exports.createCoordinator = async (req, res, next) => {
+  // return console.log(req.body.coordinatorDesignation);
+  if (!req.file) {
+    return res
+      .status(208)
+      .json({ isError: true, title: "Error", message: "Image is not given" });
+  }
+  const cc = await Coordinator.findOne({
+    coordinatorEmail: req.body.coordinatorEmail,
+  });
+  if (cc) {
+    if (req.file) {
+      const pathImg = "upload/images/" + req.file.filename;
+      fileHelper.deleteFiles(pathImg);
+    }
+    return res.status(208).json({
+      isError: true,
+      title: "Error",
+      message: `Coordinator already exists with this mail ${req.body.coordinatorEmail}`,
+    });
+  }
   const {
     coordinatorName,
     coordinatorPhone,
@@ -14,7 +34,7 @@ exports.createCoordinator = (req, res, next) => {
     coordinatorType,
     coordinatorDesignation,
   } = req.body;
-  // return console.log(req.file.filename);
+  // return console.log(coordinatorType);
 
   const c1 = new Coordinator({
     coordinatorName: coordinatorName,
@@ -31,13 +51,18 @@ exports.createCoordinator = (req, res, next) => {
     if (err) {
       //err
       console.log(err);
-      return res.status(400).json({
+      if (req.file) {
+        const pathImg = "upload/images/" + req.file.filename;
+        fileHelper.deleteFiles(pathImg);
+      }
+      return res.status(208).json({
         error: "error occurd, not able to saved in db ",
       });
     }
-    res.status(201).json({
-      message: "coordinator created successfully! ",
-      c1,
+    return res.status(201).json({
+      isError: false,
+      title: "Success",
+      message: "Coordinator saved!",
     });
   });
 };

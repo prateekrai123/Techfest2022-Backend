@@ -22,7 +22,7 @@ module.exports.addSponsor = (req, res) => {
 
   const { name, link } = req.body;
 
-  return console.log(name);
+  // return console.log(name);
 
   const sponsor = new Sponsors({
     title: name,
@@ -41,7 +41,11 @@ module.exports.addSponsor = (req, res) => {
       }
       return res
         .status(208)
-        .json({ isError: true, title: "true", message: err });
+        .json({
+          isError: true,
+          title: "Error",
+          message: "Some error ocurd while saving!",
+        });
     }
 
     return res
