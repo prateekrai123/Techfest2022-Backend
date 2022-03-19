@@ -104,17 +104,19 @@ module.exports.addEvents = (req, res) => {
 };
 
 module.exports.getAllEvents = (req, res) => {
-  Event.find({}, (err, events) => {
-    if (err || !events) {
-      return res.status(400).json(failAction(err));
-    }
-    return res.status(200).json({
-      isError: false,
-      title: "Succes",
-      message: "succes",
-      data: events,
+  Event.find()
+    .populate("studentCoordinator", ["coordinatorName", "coordinatorEmail"])
+    .exec((err, events) => {
+      if (err || !events) {
+        return res.status(208).json(failAction(err));
+      }
+      return res.status(200).json({
+        isError: false,
+        title: "Succes",
+        message: "succes",
+        data: events,
+      });
     });
-  });
 };
 
 exports.getByDomain = (req, res, next) => {
@@ -150,5 +152,29 @@ module.exports.getEventById = (req, res) => {
       return res.status(400).json(failAction("Event does not exists"));
     }
     return res.status(200).json(successAction(event));
+  });
+};
+
+exports.deletEvent = (req, res, next) => {
+  const eId = req.params.eId;
+
+  Event.findByIdAndDelete().then((result) => {
+    if (!result) {
+      res.status(208).json({
+        isError: true,
+        title: "Error",
+        message: "Image is not given",
+      });
+    }
+    const pathImg = "upload/images/" + result.photo;
+    if (fs.existsSync(pathImg)) {
+      fileHelper.deleteFiles(pathImg);
+    } //photo exists
+
+    res.status(208).json({
+      data: result,
+      statusCode: 410,
+      message: "successfully deleted! ",
+    });
   });
 };
