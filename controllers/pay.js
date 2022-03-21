@@ -5,16 +5,21 @@ exports.payUser = async (req, res, next) => {
     const sessionStripe = await Stripe.checkout.sessions.create({
       payment_method_types: ["card"],
       mode: "payment",
-      user_paid_id: "mahi",
+      line_items: [
+        {
+          // TODO: replace this with the `price` of the product you want to sell
+          price: "price_1KfhYxSFIjJ4RWp4pdvCIEGc",
+          quantity: 1,
+        },
+      ],
       success_url: `${process.env.LOCAL_URL_BK}/pay/success`,
       cancel_url: `${process.env.LOCAL_URL_BK}/pay/fail`,
     });
-    console.log(sessionStripe.url);
+    // res.redirect(sessionStripe.url);
     res.status(200).json({ url: sessionStripe.url, isError: false });
   } catch (e) {
-    res.status(500).json({ isError: true, message: "False" });
+    res.status(200).json({ isError: true, message: e });
   }
-  console.log("here");
 };
 
 exports.successPay = (req, res) => {
