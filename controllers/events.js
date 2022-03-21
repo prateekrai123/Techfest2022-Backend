@@ -2,6 +2,7 @@ const { validationResult } = require("express-validator");
 const Event = require("../models/events");
 const { successAction, failAction } = require("../utils/response");
 const fileHelper = require("../utils/file");
+const fs = require("fs");
 
 module.exports.addEvents = (req, res) => {
   if (!req.file) {
@@ -30,6 +31,7 @@ module.exports.addEvents = (req, res) => {
     time,
     eventMode,
     domain,
+    driveLink,
     studentCoordinator,
   } = req.body;
   const photo = req.file.filename;
@@ -53,10 +55,10 @@ module.exports.addEvents = (req, res) => {
       return res.status(208).json({
         isError: true,
         title: "Error",
-        message: "Event already exists",
+        message: `Event already exists with this name :- ${name}`,
       });
     } else {
-      const payload = {
+      const eLoad = {
         name,
         description,
         photo,
@@ -64,10 +66,11 @@ module.exports.addEvents = (req, res) => {
         time,
         eventMode,
         domain,
+        driveLink,
         studentCoordinator: studentCoordinatorArr,
       };
 
-      const event = new Event(payload);
+      const event = new Event(eLoad);
 
       try {
         event.save((err, event) => {
@@ -122,22 +125,28 @@ module.exports.getAllEvents = (req, res) => {
 exports.getByDomain = (req, res, next) => {
   const name = req.params.name.trim().toLowerCase();
   //return console.log(name);
-  Event.find({ domain: name }).then((d) => {
-    if (!d) {
-      return res.status(200).json({
-        isError: true,
-        title: "Error",
-        message: "Not found",
-      });
-    }
+  Event.find({ domain: name })
+    .populate("studentCoordinator", [
+      "coordinatorName",
+      "coordinatorPhone",
+      "photo",
+    ])
+    .exec((err, d) => {
+      if (err || !d) {
+        return res.status(200).json({
+          isError: true,
+          title: "Error",
+          message: "Not found",
+        });
+      }
 
-    return res.status(200).json({
-      isError: false,
-      title: "Succes",
-      message: "succes",
-      data: d,
+      return res.status(200).json({
+        isError: false,
+        title: "Succes",
+        message: "succes",
+        data: d,
+      });
     });
-  });
 };
 
 module.exports.getEventById = (req, res) => {
@@ -158,7 +167,7 @@ module.exports.getEventById = (req, res) => {
 exports.deletEvent = (req, res, next) => {
   const eId = req.params.eId;
 
-  Event.findByIdAndDelete().then((result) => {
+  Event.findByIdAndDelete(eId).then((result) => {
     if (!result) {
       res.status(208).json({
         isError: true,
@@ -166,6 +175,9 @@ exports.deletEvent = (req, res, next) => {
         message: "Image is not given",
       });
     }
+
+    //return console.log(eId, result);
+
     const pathImg = "upload/images/" + result.photo;
     if (fs.existsSync(pathImg)) {
       fileHelper.deleteFiles(pathImg);

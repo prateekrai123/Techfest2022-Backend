@@ -79,15 +79,41 @@ exports.getCoordinatorById = (req, res, next) => {
   Coordinator.findById(cid).then((c) => {
     //c is coordinator info
     if (!c) {
-      return res.status(400).json(failAction("not found"));
+      return res.status(208).json({
+        isError: true,
+        title: "Error",
+        message: "Plz first select something to update!",
+      });
     }
 
-    res.status(200).json(successAction({ data: c }));
+    res.status(200).json({ isError: false, data: c });
   });
 };
 
-exports.updateCoordinator = (req, res) => {
+exports.updateCoordinator = (req, res, next) => {
   const cid = req.params.cid;
+
+  const {
+    coordinatorName,
+    coordinatorPhone,
+    coordinatorEmail,
+    coordinatorType,
+    coordinatorDesignation,
+  } = req.body;
+
+  let imageUrl = req.body.imageUrl;
+
+  if (req.file) {
+    imageUrl = req.file.filename;
+  }
+
+  return console.log(cid, req.body);
+  if (!imageUrl) {
+    return res
+      .status(208)
+      .json({ isError: true, title: "Error", message: "Image is not given" });
+  }
+
   Coordinator.updateOne(id).then((c) => {
     res.status(200).json({
       message: "get",

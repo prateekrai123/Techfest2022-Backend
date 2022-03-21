@@ -17,6 +17,11 @@ const EventSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  driveLink: {
+    type: String,
+    trim: true,
+    required: true,
+  },
   domain: {
     type: String,
     trim: true,
