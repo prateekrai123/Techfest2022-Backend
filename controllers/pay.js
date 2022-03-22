@@ -24,8 +24,8 @@ exports.payUser = async (req, res, next) => {
       metadata: {
         userId: "mima",
       },
-      success_url: `https://api.techfestsliet.com/pay/success/?uId=${uId}`,
-      cancel_url: `https://api.techfestsliet.com/pay/fail/?uId=${uId}`,
+      success_url: `${process.env.API_URL_BK}/pay/success/?uId=${uId}`,
+      cancel_url: `${process.env.API_URL_BK}/pay/fail/?uId=${uId}`,
     });
     let userUpdate = await User.findOneAndUpdate(
       { _id: uId },
