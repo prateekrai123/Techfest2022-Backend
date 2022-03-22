@@ -106,6 +106,16 @@ const userSchema = mongoose.Schema(
       paymentStatus: {
         type: String,
       },
+      isSuccess: {
+        type: Boolean,
+        default: false,
+      },
+      paymentIntent: {
+        type: String,
+      },
+      payUserDetail: {
+        type: mongoose.SchemaTypes.Mixed,
+      },
     },
     events: [
       {

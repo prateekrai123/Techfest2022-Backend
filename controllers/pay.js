@@ -24,8 +24,8 @@ exports.payUser = async (req, res, next) => {
       metadata: {
         userId: "mima",
       },
-      success_url: `${process.env.LOCAL_URL_BK}/pay/success`,
-      cancel_url: `${process.env.LOCAL_URL_BK}/pay/fail`,
+      success_url: `${process.env.LOCAL_URL_BK}/pay/success/?uId=${uId}`,
+      cancel_url: `${process.env.LOCAL_URL_BK}/pay/fail/?uId=${uId}`,
     });
     let userUpdate = await User.findOneAndUpdate(
       { _id: uId },
@@ -44,8 +44,60 @@ exports.payUser = async (req, res, next) => {
   }
 };
 
-exports.successPay = (req, res) => {
-  req.res.render("successpay");
+exports.successPay = async (req, res) => {
+  const uId = req.query.uId;
+  const getPaymentId = await User.findById({ _id: uId });
+  const checkIfPaid = await Stripe.checkout.sessions.retrieve(
+    getPaymentId.paymentDetails.paymentId
+  );
+  if (!checkIfPaid) {
+    return res.send("Some Error Accured");
+  }
+
+  if (checkIfPaid.payment_status != "unpaid") {
+    // User.findByIdAndUpdate(
+    //  customer_details
+    //   {
+    //     _id: uId,
+    //   },
+    //   {
+    //     $set: { hasPaidEntry: true },
+    //   },
+    //   {
+    //     new: true,
+    //     useFindAndModify: false,
+    //   },
+    //   {
+    //     paymentDetails: {
+    //       paymentStatus: "Paid",
+    //     },
+    //   },
+    //   (err, user) => {
+    //     if (err) {
+    //       console.log(err);
+    //       return res.status(208).json({
+    //         error: "You are not authorized to update this user",
+    //       });
+    //     }
+    //     res.render("successpay");
+    //   }
+    // );
+
+    let userUpdate = await User.findOneAndUpdate(
+      { _id: uId },
+      {
+        paymentDetails: {
+          paymentStatus: checkIfPaid.payment_status,
+          isSuccess: true,
+          paymentId: checkIfPaid.id,
+          paymentIntent: checkIfPaid.payment_intent,
+          subscriptionType: getPaymentId.paymentDetails.subscriptionType,
+          payUserDetail: checkIfPaid.customer_details,
+        },
+      }
+    );
+  }
+  res.render("successpay");
 };
 
 exports.failPay = (req, res) => {
