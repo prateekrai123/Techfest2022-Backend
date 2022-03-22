@@ -55,34 +55,6 @@ exports.successPay = async (req, res) => {
   }
 
   if (checkIfPaid.payment_status != "unpaid") {
-    // User.findByIdAndUpdate(
-    //  customer_details
-    //   {
-    //     _id: uId,
-    //   },
-    //   {
-    //     $set: { hasPaidEntry: true },
-    //   },
-    //   {
-    //     new: true,
-    //     useFindAndModify: false,
-    //   },
-    //   {
-    //     paymentDetails: {
-    //       paymentStatus: "Paid",
-    //     },
-    //   },
-    //   (err, user) => {
-    //     if (err) {
-    //       console.log(err);
-    //       return res.status(208).json({
-    //         error: "You are not authorized to update this user",
-    //       });
-    //     }
-    //     res.render("successpay");
-    //   }
-    // );
-
     let userUpdate = await User.findOneAndUpdate(
       { _id: uId },
       {
