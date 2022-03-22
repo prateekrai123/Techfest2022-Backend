@@ -1,5 +1,9 @@
 const { check } = require("express-validator");
-const { getAllSponsors, addSponsor } = require("../controllers/sponsors");
+const {
+  getAllSponsors,
+  addSponsor,
+  deleteSponsor,
+} = require("../controllers/sponsors");
 const isAuth = require("../middleware/isAuth");
 const upload = require("../utils/upload");
 
@@ -17,5 +21,7 @@ router.post(
   upload.single("sponserImg"),
   addSponsor
 );
+
+router.delete("/delete/:sId", deleteSponsor);
 
 module.exports = router;
