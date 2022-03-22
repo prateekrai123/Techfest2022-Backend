@@ -12,13 +12,16 @@ exports.payUser = async (req, res, next) => {
           quantity: 1,
         },
       ],
+      metadata: {
+        userId: "mima",
+      },
       success_url: `${process.env.LOCAL_URL_BK}/pay/success`,
       cancel_url: `${process.env.LOCAL_URL_BK}/pay/fail`,
     });
-    // res.redirect(sessionStripe.url);
+    // console.log(sessionStripe);
     res.status(200).json({ url: sessionStripe.url, isError: false });
   } catch (e) {
-    res.status(200).json({ isError: true, message: e });
+    res.status(208).json({ isError: true, message: e });
   }
 };
 

@@ -17,7 +17,9 @@ module.exports = (req, res, next) => {
   if (!decodedToken) {
     res.status(208).json({ isError: true, message: "Failed" });
   }
+  // if(decodedToken.role==569){
 
+  // }
   req.userId = decodedToken.id;
   next();
 };
