@@ -96,8 +96,16 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    paymentId: {
-      type: String,
+    paymentDetails: {
+      paymentId: {
+        type: String,
+      },
+      subscriptionType: {
+        type: String,
+      },
+      paymentStatus: {
+        type: String,
+      },
     },
     events: [
       {

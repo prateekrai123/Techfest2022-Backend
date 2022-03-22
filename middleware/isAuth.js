@@ -4,7 +4,8 @@ module.exports = (req, res, next) => {
   const authHeader = req.get("Authorization");
 
   if (!authHeader) {
-    res.status(208).json({ isError: true, message: "Failed" });
+    console.log("not token");
+    return res.status(208).json({ isError: true, message: "Failed" });
   }
   const token = req.get("Authorization").split(" ")[1];
   let decodedToken;

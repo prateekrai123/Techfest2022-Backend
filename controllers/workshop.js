@@ -108,17 +108,20 @@ exports.createWorkshop = (req, res) => {
 };
 
 exports.getAllWokshop = (req, res) => {
-  Workshop.find().then((w) => {
-    if (!w) {
-      return res.status(400).json({
-        message: "Page not found! ",
-      });
-    }
-    res
-      .status(200)
-      .json({ isError: true, title: "Error", message: "fetched", data: w });
-    // console.log(c)
-  });
+  Workshop.find()
+    .populate("studentCoordinator", ["coordinatorName", "coordinatorEmail"])
+    .populate("facultyCoordinator", ["coordinatorName", "coordinatorEmail"])
+    .exec((err, w) => {
+      if (err || !w) {
+        return res.status(208).json({
+          message: "Page not found! ",
+        });
+      }
+      res
+        .status(200)
+        .json({ isError: true, title: "Error", message: "fetched", data: w });
+      // console.log(c)
+    });
 };
 
 exports.deleteWorkshop = (req, res) => {
