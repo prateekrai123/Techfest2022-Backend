@@ -35,8 +35,9 @@ router.post(
 
 router.post(
   "/pushWorkshop",
-  hasPaymendSuccess,
+
   isAuth,
+  hasPaymendSuccess,
   [check("workshop", "workshop is required")],
   pushWorkshop
 );

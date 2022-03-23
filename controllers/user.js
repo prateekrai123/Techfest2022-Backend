@@ -76,15 +76,10 @@ module.exports.getUserByEmail = (req, res) => {
 };
 
 module.exports.pushEvent = async (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    return res.status(400).json(failAction(errors.array()[0]));
-  }
   const userId = req.userId;
-  const { event } = req.body;
+  const event = req.body;
 
-  const user = await findById(userId);
+  const user = await User.findById(userId);
 
   if (!user) {
     return res.status(208).json({ isError: true, message: "User not found!" });
@@ -97,7 +92,7 @@ module.exports.pushEvent = async (req, res) => {
   // }
 
   user.events.forEach((ev) => {
-    if (ev.id == event.id) {
+    if (ev._id == event._id) {
       return res.status(208).json({
         isError: true,
         title: "Error",
@@ -133,7 +128,7 @@ module.exports.pushWorkshop = async (req, res) => {
   const { workshop } = req.body;
 
   const userId = req.userId;
-  const user = await findById(userId);
+  const user = await User.findById(userId);
 
   if (!user) {
     return res.status(208).json({ isError: true, message: "User not found!" });

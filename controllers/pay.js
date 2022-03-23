@@ -95,12 +95,13 @@ exports.hasPaymendSuccess = async (req, res, next) => {
       .json({ isError: true, message: "Some Error Accured" });
   }
 
-  if (checkIfPaid.payment_status != "unpaid") {
-    next();
+  if (checkIfPaid.payment_status == "unpaid") {
+    res.status(208).json({
+      isError: true,
+      title: "Not Paid",
+      message: "You have to pay first!",
+    });
   }
-  return res.status(208).json({
-    isError: true,
-    title: "Not Paid",
-    message: "You have to pay first!",
-  });
+
+  next();
 };
