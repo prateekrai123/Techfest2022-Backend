@@ -81,8 +81,8 @@ module.exports.pushEvent = async (req, res) => {
   if (!errors.isEmpty()) {
     return res.status(400).json(failAction(errors.array()[0]));
   }
-
-  const { event, userId } = req.body;
+  const userId = req.userId;
+  const { event } = req.body;
 
   const user = await findById(userId);
 
@@ -98,7 +98,11 @@ module.exports.pushEvent = async (req, res) => {
 
   user.events.forEach((ev) => {
     if (ev.id == event.id) {
-      return res.status(400).json(failAction("Event Already Added"));
+      return res.status(400).json({
+        isError: true,
+        title: "Error",
+        message: "Event Already Added",
+      });
     }
   });
 
@@ -128,21 +132,25 @@ module.exports.pushWorkshop = async (req, res) => {
 
   const { workshop } = req.body;
 
-  const user = req.user;
+  const userId = req.userId;
+  const user = await findById(userId);
 
-  if (!user.hasPaidEntry) {
-    return res.status(400).json(failAction("You have to pay entry fee first"));
+  if (!user) {
+    return res.status(208).json({ isError: true, message: "User not found!" });
   }
-
-  if (!user.isProfileComplete) {
-    return res
-      .status(400)
-      .json(failAction("You have to complete your profile first"));
-  }
+  // if (!user.isProfileComplete) {
+  //   return res
+  //     .status(400)
+  //     .json(failAction("You have to complete your profile first"));
+  // }
 
   user.workshops.forEach((ws) => {
     if (ws.id == workshop.id) {
-      return res.status(400).json(failAction("Workshop Already Added"));
+      return res.status(400).json({
+        isError: true,
+        title: "Error",
+        message: "Workshop Already Added",
+      });
     }
   });
 
@@ -151,10 +159,18 @@ module.exports.pushWorkshop = async (req, res) => {
     { $push: { workshops: workshop } },
     (err, user) => {
       if (err || !user) {
-        return res.status(400).json(failAction("Cannot add workshop"));
+        return res.status(400).json({
+          isError: true,
+          title: "Error",
+          message: "Cannot add workshop",
+        });
       }
 
-      return res.status(201).json(successAction("Workshop is added"));
+      return res.status(201).json({
+        isError: false,
+        title: "Success",
+        message: "Workshop is added",
+      });
     }
   );
 };
