@@ -75,3 +75,32 @@ exports.successPay = async (req, res) => {
 exports.failPay = (req, res) => {
   res.render("failedpay");
 };
+
+exports.failPpay = (req, res) => {
+  res.render("failedpay");
+};
+exports.sucPay = (req, res) => {
+  res.render("successpay");
+};
+
+// exports.hasPaymendSuccess = (req, res, next) => {
+//   const uId = req.userId;
+//   const getPaymentUser = await User.findById({ _id: uId });
+//   const checkIfPaid = await Stripe.checkout.sessions.retrieve(
+//     getPaymentUser.paymentDetails.paymentId
+//   );
+//   if (!checkIfPaid) {
+//     return res
+//       .status(208)
+//       .json({ isError: true, message: "Some Error Accured" });
+//   }
+
+//   if (checkIfPaid.payment_status != "unpaid") {
+//     next();
+//   }
+//   return res.status(208).json({
+//     isError: true,
+//     title: "Not Paid",
+//     message: "You have to pay first!",
+//   });
+// };
