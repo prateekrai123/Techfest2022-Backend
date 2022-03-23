@@ -12,11 +12,11 @@ module.exports = (req, res, next) => {
   try {
     decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   } catch (error) {
-    res.status(208).json({ isError: true, message: "Failed" });
+    res.status(208).json({ isError: true, authError: true, message: "Failed" });
   }
 
   if (!decodedToken) {
-    res.status(208).json({ isError: true, message: "Failed" });
+    res.status(208).json({ isError: true, authError: true, message: "Failed" });
   }
   // if(decodedToken.role==569){
 
