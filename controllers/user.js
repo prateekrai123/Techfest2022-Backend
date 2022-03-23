@@ -98,7 +98,7 @@ module.exports.pushEvent = async (req, res) => {
 
   user.events.forEach((ev) => {
     if (ev.id == event.id) {
-      return res.status(400).json({
+      return res.status(208).json({
         isError: true,
         title: "Error",
         message: "Event Already Added",
@@ -127,7 +127,7 @@ module.exports.pushWorkshop = async (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(400).json(failAction(errors.array()[0]));
+    return res.status(208).json(failAction(errors.array()[0]));
   }
 
   const { workshop } = req.body;
@@ -138,6 +138,7 @@ module.exports.pushWorkshop = async (req, res) => {
   if (!user) {
     return res.status(208).json({ isError: true, message: "User not found!" });
   }
+
   // if (!user.isProfileComplete) {
   //   return res
   //     .status(400)
