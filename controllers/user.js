@@ -90,15 +90,11 @@ module.exports.pushEvent = async (req, res) => {
     return res.status(208).json({ isError: true, message: "User not found!" });
   }
 
-  if (!user.hasPaidEntry) {
-    return res.status(400).json(failAction("You have to pay entry fee first"));
-  }
-
-  if (!user.isProfileComplete) {
-    return res
-      .status(400)
-      .json(failAction("You have to complete your profile first"));
-  }
+  // if (!user.isProfileComplete) {
+  //   return res
+  //     .status(400)
+  //     .json(failAction("You have to complete your profile first"));
+  // }
 
   user.events.forEach((ev) => {
     if (ev.id == event.id) {
@@ -111,10 +107,14 @@ module.exports.pushEvent = async (req, res) => {
     { $push: { events: event } },
     (err, user) => {
       if (err || !user) {
-        return res.status(400).json(failAction("Cannot add event"));
+        return res
+          .status(208)
+          .json({ isError: true, title: "Error", message: "Cannot add event" });
       }
 
-      return res.status(201).json(successAction("Event is added"));
+      return res
+        .status(201)
+        .json({ isError: true, title: "Success", message: "Event is added" });
     }
   );
 };

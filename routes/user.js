@@ -1,4 +1,5 @@
 const { check } = require("express-validator");
+const { hasPaymendSuccess } = require("../controllers/pay");
 const {
   getAllUsers,
   getUserById,
@@ -27,12 +28,14 @@ router.post("/updateUser", isAuth, updateUser);
 router.post(
   "/pushEvent",
   isAuth,
+  hasPaymendSuccess,
   [check("event", "event is required")],
   pushEvent
 );
 
 router.post(
   "/pushWorkshop",
+  hasPaymendSuccess,
   isAuth,
   [check("workshop", "workshop is required")],
   pushWorkshop
