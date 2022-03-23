@@ -22,6 +22,6 @@ router.post(
   addSponsor
 );
 
-router.delete("/delete/:sId", deleteSponsor);
+router.delete("/delete/:sId", isAuth, deleteSponsor);
 
 module.exports = router;

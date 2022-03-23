@@ -68,7 +68,7 @@ module.exports.getAllSponsors = (req, res) => {
 };
 
 exports.deleteSponsor = (req, res) => {
-  const sId = req.body.sId;
+  const sId = req.params.sId;
 
   Sponsors.findByIdAndDelete(sId)
     .then((result) => {

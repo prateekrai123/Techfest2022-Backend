@@ -12,7 +12,7 @@ const isAuth = require("../middleware/isAuth");
 
 const router = require("express").Router();
 
-router.get("/allUsers", getAllUsers);
+router.get("/allUsers", isAuth, getAllUsers);
 
 router.get("/getUserById", isAuth, getUserById);
 
@@ -22,12 +22,18 @@ router.get(
   getUserByEmail
 );
 
-router.post("/updateUser", updateUser);
+router.post("/updateUser", isAuth, updateUser);
 
-router.post("/pushEvent", [check("event", "event is required")], pushEvent);
+router.post(
+  "/pushEvent",
+  isAuth,
+  [check("event", "event is required")],
+  pushEvent
+);
 
 router.post(
   "/pushWorkshop",
+  isAuth,
   [check("workshop", "workshop is required")],
   pushWorkshop
 );

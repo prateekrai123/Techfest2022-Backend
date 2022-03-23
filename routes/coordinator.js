@@ -35,6 +35,7 @@ router.get("/getFacultyCoordniator", coordinatorController.getFacultyCo);
 
 router.put(
   "/update/:cid",
+  isAuth,
   [check("cid", "Id should be proper").isLength({ min: 24 })],
   coordinatorController.updateCoordinator
 );

@@ -1,6 +1,7 @@
 const express = require("express");
 const { check } = require("express-validator");
 const workshopController = require("../controllers/workshop");
+const isAuth = require("../middleware/isAuth");
 const upload = require("../utils/upload");
 
 const router = express.Router();
@@ -12,6 +13,7 @@ router.get(
 );
 router.post(
   "/create",
+  isAuth,
   [
     check("wsName", "Workshop name required!"),
     check("wsDesc", "Workshop name required!"),
