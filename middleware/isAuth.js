@@ -7,18 +7,22 @@ module.exports = (req, res, next) => {
     console.log("not token");
     return res
       .status(208)
-      .json({ isError: true, authError: true, message: "Failed" });
+      .json({ isError: true, authError: true, message: "Failed No token" });
   }
   const token = req.get("Authorization").split(" ")[1];
   let decodedToken;
   try {
     decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   } catch (error) {
-    res.status(208).json({ isError: true, authError: true, message: "Failed" });
+    res
+      .status(208)
+      .json({ isError: true, authError: true, message: "Failed Not good" });
   }
 
   if (!decodedToken) {
-    res.status(208).json({ isError: true, authError: true, message: "Failed" });
+    res
+      .status(208)
+      .json({ isError: true, authError: true, message: "Failed Token expire" });
   }
   // if(decodedToken.role==569){
 
