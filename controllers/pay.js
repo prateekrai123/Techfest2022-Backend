@@ -49,7 +49,7 @@ exports.successPay = async (req, res) => {
   const getPaymentId = await User.findById({ _id: uId });
   if (!getPaymentId) {
     return res.redirect(
-      `${process.env.API_FRONTEND_URL}/user/pay/?paystatus=false`
+      `${process.env.API_FRONTEND_URL}/user/pay/?paystatus=falses`
     );
   }
   const checkIfPaid = await Stripe.checkout.sessions.retrieve(
