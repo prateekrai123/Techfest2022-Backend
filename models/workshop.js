@@ -27,6 +27,11 @@ const workshop = new Schema({
     type: String,
     maxlength: 200,
   },
+  workshopMode: {
+    type: String,
+    required: true,
+    trim: true,
+  },
   startDate: {
     type: Date,
     required: true,

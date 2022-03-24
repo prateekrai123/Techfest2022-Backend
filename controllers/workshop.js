@@ -48,6 +48,7 @@ exports.createWorkshop = (req, res) => {
     wLinkDrive,
     startDate,
     endDate,
+    workshopMode,
     studentCoordinator,
     facultyCoordinator,
   } = req.body;
@@ -77,6 +78,7 @@ exports.createWorkshop = (req, res) => {
         startDate: startDate,
         wDriveLink: wLinkDrive,
         endDate: endDate,
+        workshopMode: workshopMode,
         studentCoordinator: studentCoordinatorArr,
         facultyCoordinator: facultyCoordinatorArr,
         photo: req.file.filename,
