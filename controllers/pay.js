@@ -37,6 +37,7 @@ exports.payUser = async (req, res, next) => {
         },
       }
     );
+    // return console.log(`${process.env.API_URL_BK}/pay/success/?uId=${uId}`);
     res.status(200).json({ url: sessionStripe.url, isError: false });
     // return console.log(checkIfAlreadyPaid, sessionStripe.url);
   } catch (e) {
@@ -49,7 +50,7 @@ exports.successPay = async (req, res) => {
   const getPaymentId = await User.findById({ _id: uId });
   if (!getPaymentId) {
     return res.redirect(
-      `${process.env.API_FRONTEND_URL}/user/pay/?paystatus=falses`
+      `${process.env.API_FRONTEND_URL}/user/pay/?paystatus=false`
     );
   }
   const checkIfPaid = await Stripe.checkout.sessions.retrieve(
