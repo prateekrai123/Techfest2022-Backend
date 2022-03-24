@@ -3,6 +3,7 @@ const User = require("../models/user");
 const { validationResult } = require("express-validator");
 const { findById } = require("../models/user");
 const Event = require("../models/events");
+const Workshop = require("../models/workshop");
 module.exports.getReferralCode = (req, res) => {
   const errors = validationResult(req);
 
@@ -31,7 +32,7 @@ module.exports.getUserById = (req, res) => {
 
   User.findOne({ _id: _id })
     .populate("events", ["name", "endDate"])
-    .populate("workshops", "workshopName")
+    .populate("workshops", ["workshopName", "endDate"])
     .exec((err, user) => {
       if (err || !user) {
         return res.status(208).json({ isError: true, message: "Not auth" });
@@ -102,7 +103,7 @@ module.exports.pushEvent = async (req, res) => {
   }
   if (
     eventExisted.eventMode === "offline" &&
-    user.paymentDetails.subscriptionType !== "600"
+    user.paymentDetails.subscriptionType !== "599"
   ) {
     return res.status(208).json({
       isError: true,
@@ -149,20 +150,42 @@ module.exports.pushWorkshop = async (req, res) => {
   }
 
   const { workshop } = req.body;
-  return console.log(workshop);
+  // return console.log(workshop);
   const userId = req.userId;
   const user = await User.findById(userId);
 
   if (!user) {
     return res.status(208).json({ isError: true, message: "User not found!" });
   }
+  const workshopExisted = await Workshop.findById(workshop._id);
+  if (!workshopExisted) {
+    return res.status(208).json({
+      isError: true,
+      title: "Workshop Error",
+      message: "Workshop not found!",
+    });
+  }
+  if (
+    workshopExisted.workshopMode === "offline" &&
+    user.paymentDetails.subscriptionType !== "599"
+  ) {
+    return res.status(208).json({
+      isError: true,
+      title: "Payment Error",
+      message: "This mode is for Gold subscription users!",
+    });
+  }
+  const workshopsListed = user.workshops.map((w) => {
+    return w._id.toString();
+  });
 
-  // if (!user.isProfileComplete) {
-  //   return res
-  //     .status(400)
-  //     .json(failAction("You have to complete your profile first"));
-  // }
-
+  if (workshopsListed.indexOf(workshop._id.toString()) !== -1) {
+    return res.status(208).json({
+      isError: true,
+      title: "Workshop Exist",
+      message: "Workshop Already Added",
+    });
+  }
   user.workshops.forEach((ws) => {
     if (ws.id == workshop.id) {
       return res.status(400).json({

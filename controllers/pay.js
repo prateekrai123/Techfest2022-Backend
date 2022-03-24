@@ -5,9 +5,9 @@ exports.payUser = async (req, res, next) => {
   const uId = req.userId;
   const userSubscriptionPrice = req.body.price;
   const priceId =
-    userSubscriptionPrice === 300
-      ? "price_1KfhYxSFIjJ4RWp4pdvCIEGc"
-      : "price_1KflKoSFIjJ4RWp4oTNiipUD";
+    userSubscriptionPrice === 299
+      ? "price_1Kgr1xSFIjJ4RWp4Na3iKYxL"
+      : "price_1KgqzSSFIjJ4RWp4396olMsQ";
   // return console.log(priceId);
 
   try {

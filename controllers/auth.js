@@ -108,7 +108,7 @@ exports.signUp = async (req, res) => {
           hasPaidEntry: true,
           paymentDetails: {
             isSuccess: true,
-            subscriptionType: 600,
+            subscriptionType: 599,
             paymentStatus: "Sliet mail Domain",
           },
           regNo: eArr[0],
@@ -247,12 +247,25 @@ module.exports.verifyUser = async (req, res) => {
       user.isVerified = true;
       await user.save();
       await verifyToken.findOneAndDelete({ token: token });
-      return res.status(200).json(successAction("The user is verified"));
+
+      return res.render("verifyuser", {
+        isError: false,
+        message: "The user is verified successfully!",
+      });
+      // return res.status(200).json(successAction("The user is verified"));
     } else {
-      return res.status(404).json(failAction("The token is expired"));
+      return res.render("verifyuser", {
+        isError: true,
+        message: "The token is expired!",
+      });
+      // return res.status(404).json(failAction("The token is expired"));
     }
   } else {
-    return res.status(404).json(failAction("Cannot get token"));
+    return res.render("verifyuser", {
+      isError: true,
+      message: "Cannot get token",
+    });
+    // return res.status(404).json(failAction("Cannot get token"));
   }
 };
 

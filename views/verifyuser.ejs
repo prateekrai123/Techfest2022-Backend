@@ -6,19 +6,17 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Document</title>
     <style>
-      *{
+      * {
         margin: 0;
         padding: 0;
       }
-      .body{
+      .body {
         background-image: url("/img/staticbg.jpg");
         background-size: cover;
         background-position: center;
         background-attachment: fixed;
-  
       }
-      .bakcGround__Payfail{
-       
+      .bakcGround__Payfail {
         margin: auto;
         text-align: center;
         margin-top: 15%;
@@ -27,13 +25,12 @@
         border-radius: 10px;
         box-shadow: 0px 0px 20px 11px rgb(0, 145, 7);
         background-color: white;
-
       }
-      .bakcGround__Payfail__logo img{
+      .bakcGround__Payfail__logo img {
         width: 20rem;
         height: 15rem;
       }
-      .bakcGround__Payfail h1{
+      .bakcGround__Payfail h1 {
         font-size: 30px;
         margin-bottom: 5px;
       }
@@ -43,10 +40,20 @@
     <div class="succespay">
       <div class="bakcGround__Payfail">
         <div class="bakcGround__Payfail__logo">
-          <img autoplay loop = "false" src="/img/sucess.gif" alt=""/>
+          <% if(isError){ %>
+          <img autoplay loop="false" src="/img/fail.gif" alt="" />
+          <% } %> <% if(!isError){ %>
+          <img autoplay loop="false" src="/img/sucess.gif" alt="" />
+
+          <% } %>
         </div>
-        <h1>Verification Successfull</h1>
+        <h1><%= message%></h1>
       </div>
     </div>
   </body>
+  <script>
+    setTimeout(() => {
+      window.location.replace("https://temp.techfestsliet.com/signin");
+    }, 4500);
+  </script>
 </html>
