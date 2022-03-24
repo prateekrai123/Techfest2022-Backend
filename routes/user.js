@@ -8,6 +8,7 @@ const {
   pushEvent,
   pushWorkshop,
   getReferralCode,
+  getVerifyUserWbe,
 } = require("../controllers/user");
 const isAuth = require("../middleware/isAuth");
 
@@ -32,6 +33,8 @@ router.post(
   [check("event", "event is required")],
   pushEvent
 );
+
+router.get("/verify", getVerifyUserWbe);
 
 router.post(
   "/pushWorkshop",

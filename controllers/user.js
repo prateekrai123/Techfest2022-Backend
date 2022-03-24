@@ -149,7 +149,7 @@ module.exports.pushWorkshop = async (req, res) => {
   }
 
   const { workshop } = req.body;
-
+  return console.log(workshop);
   const userId = req.userId;
   const user = await User.findById(userId);
 
@@ -192,6 +192,10 @@ module.exports.pushWorkshop = async (req, res) => {
       });
     }
   );
+};
+
+exports.getVerifyUserWbe = (req, res) => {
+  res.render("verifyuser");
 };
 
 module.exports.updateUser = (req, res) => {
