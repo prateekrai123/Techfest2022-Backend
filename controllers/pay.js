@@ -24,8 +24,8 @@ exports.payUser = async (req, res, next) => {
       metadata: {
         userId: "mima",
       },
-      success_url: `${process.env.API_URL_BK}/pay/success/?uId=${uId}`,
-      cancel_url: `${process.env.API_URL_BK}/pay/fail/?uId=${uId}`,
+      success_url: `${process.env.LOCAL_URL_BK}/pay/success/?uId=${uId}`,
+      cancel_url: `${process.env.LOCAL_URL_BK}/pay/fail/?uId=${uId}`,
     });
     let userUpdate = await User.findOneAndUpdate(
       { _id: uId },
@@ -47,6 +47,11 @@ exports.payUser = async (req, res, next) => {
 exports.successPay = async (req, res) => {
   const uId = req.query.uId;
   const getPaymentId = await User.findById({ _id: uId });
+  if (!getPaymentId) {
+    return res.redirect(
+      `${process.env.LOCAL_FRONTEND_URL}/user/pay/?paystatus=false`
+    );
+  }
   const checkIfPaid = await Stripe.checkout.sessions.retrieve(
     getPaymentId.paymentDetails.paymentId
   );
@@ -58,6 +63,7 @@ exports.successPay = async (req, res) => {
     let userUpdate = await User.findOneAndUpdate(
       { _id: uId },
       {
+        hasPaidEntry: true,
         paymentDetails: {
           paymentStatus: checkIfPaid.payment_status,
           isSuccess: true,
@@ -86,22 +92,32 @@ exports.sucPay = (req, res) => {
 exports.hasPaymendSuccess = async (req, res, next) => {
   const uId = req.userId;
   const getPaymentUser = await User.findById({ _id: uId });
-  const checkIfPaid = await Stripe.checkout.sessions.retrieve(
-    getPaymentUser.paymentDetails.paymentId
-  );
-  if (!checkIfPaid) {
-    return res
-      .status(208)
-      .json({ isError: true, message: "Some Error Accured" });
-  }
-
-  if (checkIfPaid.payment_status == "unpaid") {
-    res.status(208).json({
-      isError: true,
+  // const userMailDomain = getPaymentUser.email.split("@")
+  if (
+    !(getPaymentUser.hasPaidEntry && getPaymentUser.paymentDetails.isSuccess)
+  ) {
+    return res.status(208).json({
+      payError: true,
       title: "Not Paid",
       message: "You have to pay first!",
     });
   }
+  // const checkIfPaid = await Stripe.checkout.sessions.retrieve(
+  //   getPaymentUser.paymentDetails.paymentId
+  // );
+  // if (!checkIfPaid) {
+  //   return res
+  //     .status(208)
+  //     .json({ payError: true, message: "Some Error Accured" });
+  // }
+
+  // if (checkIfPaid.payment_status == "unpaid") {
+  //   return res.status(208).json({
+  //     payError: true,
+  //     title: "Not Paid",
+  //     message: "You have to pay first!",
+  //   });
+  // }
 
   next();
 };

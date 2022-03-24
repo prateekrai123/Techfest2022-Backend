@@ -109,8 +109,18 @@ exports.createWorkshop = (req, res) => {
 
 exports.getAllWokshop = (req, res) => {
   Workshop.find()
-    .populate("studentCoordinator", ["coordinatorName", "coordinatorEmail"])
-    .populate("facultyCoordinator", ["coordinatorName", "coordinatorEmail"])
+    .populate("studentCoordinator", [
+      "coordinatorName",
+      "coordinatorEmail",
+      "coordinatorPhone",
+      "photo",
+    ])
+    .populate("facultyCoordinator", [
+      "coordinatorName",
+      "coordinatorEmail",
+      "coordinatorPhone",
+      "photo",
+    ])
     .exec((err, w) => {
       if (err || !w) {
         return res.status(208).json({

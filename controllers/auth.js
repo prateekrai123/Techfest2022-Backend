@@ -106,6 +106,11 @@ exports.signUp = async (req, res) => {
           collegeName: "Sant Longowal Institute of Engineering and Technology",
           userId: userId,
           hasPaidEntry: true,
+          paymentDetails: {
+            isSuccess: true,
+            subscriptionType: 600,
+            paymentStatus: "Sliet mail Domain",
+          },
           regNo: eArr[0],
           referralCode: referralCode,
           institution: "sliet",

@@ -2,7 +2,7 @@ const { failAction, successAction } = require("../utils/response");
 const User = require("../models/user");
 const { validationResult } = require("express-validator");
 const { findById } = require("../models/user");
-
+const Event = require("../models/events");
 module.exports.getReferralCode = (req, res) => {
   const errors = validationResult(req);
 
@@ -29,16 +29,19 @@ module.exports.getUserById = (req, res) => {
   const _id = req.userId;
   // const { _id } = req.user._id;
 
-  User.findOne({ _id: _id }, (err, user) => {
-    if (err || !user) {
-      return res.status(208).json({ isError: true, message: "Not auth" });
-    }
-    user.password = null;
+  User.findOne({ _id: _id })
+    .populate("events", ["name", "endDate"])
+    .populate("workshops", "workshopName")
+    .exec((err, user) => {
+      if (err || !user) {
+        return res.status(208).json({ isError: true, message: "Not auth" });
+      }
+      user.password = null;
 
-    return res
-      .status(200)
-      .json({ isError: false, isSuccess: true, user: user });
-  });
+      return res
+        .status(200)
+        .json({ isError: false, isSuccess: true, user: user });
+    });
 };
 
 module.exports.getAllUsers = (req, res) => {
@@ -82,33 +85,43 @@ module.exports.pushEvent = async (req, res) => {
   const user = await User.findById(userId);
 
   if (!user) {
-    return res.status(208).json({ isError: true, message: "User not found!" });
+    return res.status(208).json({
+      isError: true,
+      title: "Event Error",
+      message: "User not found!",
+    });
   }
 
-  // if (!user.isProfileComplete) {
-  //   return res
-  //     .status(400)
-  //     .json(failAction("You have to complete your profile first"));
-  // }
-
-  user.events.forEach((ev) => {
-    if (ev._id == event._id) {
-      return res.status(208).json({
-        isError: true,
-        title: "Error",
-        message: "Event Already Added",
-      });
-    }
+  const eventExisted = await Event.findById(event._id);
+  if (!eventExisted) {
+    return res.status(208).json({
+      isError: true,
+      title: "Event Error",
+      message: "Event not found!",
+    });
+  }
+  const eventsListed = user.events.map((e) => {
+    return e._id.toString();
   });
+
+  if (eventsListed.indexOf(event._id.toString()) !== -1) {
+    return res.status(208).json({
+      isError: true,
+      title: "Event Exist",
+      message: "Event Already Added",
+    });
+  }
 
   User.findOneAndUpdate(
     { _id: user._id },
     { $push: { events: event } },
     (err, user) => {
       if (err || !user) {
-        return res
-          .status(208)
-          .json({ isError: true, title: "Error", message: "Cannot add event" });
+        return res.status(208).json({
+          isError: false,
+          title: "Error",
+          message: "Cannot add event",
+        });
       }
 
       return res
