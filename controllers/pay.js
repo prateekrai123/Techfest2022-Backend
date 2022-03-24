@@ -24,8 +24,8 @@ exports.payUser = async (req, res, next) => {
       metadata: {
         userId: "mima",
       },
-      success_url: `${process.env.LOCAL_URL_BK}/pay/success/?uId=${uId}`,
-      cancel_url: `${process.env.LOCAL_URL_BK}/pay/fail/?uId=${uId}`,
+      success_url: `${process.env.API_URL_BK}/pay/success/?uId=${uId}`,
+      cancel_url: `${process.env.API_URL_BK}/pay/fail/?uId=${uId}`,
     });
     let userUpdate = await User.findOneAndUpdate(
       { _id: uId },
@@ -49,7 +49,7 @@ exports.successPay = async (req, res) => {
   const getPaymentId = await User.findById({ _id: uId });
   if (!getPaymentId) {
     return res.redirect(
-      `${process.env.LOCAL_FRONTEND_URL}/user/pay/?paystatus=false`
+      `${process.env.API_FRONTEND_URL}/user/pay/?paystatus=false`
     );
   }
   const checkIfPaid = await Stripe.checkout.sessions.retrieve(
