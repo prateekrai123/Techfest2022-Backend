@@ -100,6 +100,16 @@ module.exports.pushEvent = async (req, res) => {
       message: "Event not found!",
     });
   }
+  if (
+    eventExisted.eventMode === "offline" &&
+    user.paymentDetails.subscriptionType !== "600"
+  ) {
+    return res.status(208).json({
+      isError: true,
+      title: "Payment Error",
+      message: "This mode is for Gold subscription users!",
+    });
+  }
   const eventsListed = user.events.map((e) => {
     return e._id.toString();
   });
