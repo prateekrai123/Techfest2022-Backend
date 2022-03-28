@@ -27,6 +27,11 @@ const workshop = new Schema({
     type: String,
     maxlength: 200,
   },
+  workshopMode: {
+    type: String,
+    required: true,
+    trim: true,
+  },
   startDate: {
     type: Date,
     required: true,
@@ -35,8 +40,8 @@ const workshop = new Schema({
     type: Date,
     required: true,
   },
-  studentCoordinator: [{ type: Schema.Types.ObjectId }],
-  facultyCoordinator: [{ type: Schema.Types.ObjectId }],
+  studentCoordinator: [{ type: Schema.Types.ObjectId, ref: "Coordinator" }],
+  facultyCoordinator: [{ type: Schema.Types.ObjectId, ref: "Coordinator" }],
   photo: {
     type: String,
   },

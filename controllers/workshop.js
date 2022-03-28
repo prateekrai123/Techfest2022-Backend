@@ -48,6 +48,7 @@ exports.createWorkshop = (req, res) => {
     wLinkDrive,
     startDate,
     endDate,
+    workshopMode,
     studentCoordinator,
     facultyCoordinator,
   } = req.body;
@@ -77,6 +78,7 @@ exports.createWorkshop = (req, res) => {
         startDate: startDate,
         wDriveLink: wLinkDrive,
         endDate: endDate,
+        workshopMode: workshopMode,
         studentCoordinator: studentCoordinatorArr,
         facultyCoordinator: facultyCoordinatorArr,
         photo: req.file.filename,
@@ -108,46 +110,56 @@ exports.createWorkshop = (req, res) => {
 };
 
 exports.getAllWokshop = (req, res) => {
-  Workshop.find().then((w) => {
-    if (!w) {
-      return res.status(400).json({
-        message: "Page not found! ",
-      });
-    }
-    res
-      .status(200)
-      .json({ isError: true, title: "Error", message: "fetched", data: w });
-    // console.log(c)
-  });
+  Workshop.find()
+    .populate("studentCoordinator", [
+      "coordinatorName",
+      "coordinatorEmail",
+      "coordinatorPhone",
+      "photo",
+    ])
+    .populate("facultyCoordinator", [
+      "coordinatorName",
+      "coordinatorEmail",
+      "coordinatorPhone",
+      "photo",
+    ])
+    .exec((err, w) => {
+      if (err || !w) {
+        return res.status(208).json({
+          message: "Page not found! ",
+        });
+      }
+      res
+        .status(200)
+        .json({ isError: true, title: "Error", message: "fetched", data: w });
+      // console.log(c)
+    });
 };
 
 exports.deleteWorkshop = (req, res) => {
-  const errors = validationResult(req);
-
-  if (!errors.isEmpty()) {
-    // const err = errors.array();
-    return res.status(422).json(failAction(errors.array(), 422));
-  }
   const wId = req.params.wId;
-  try {
-    Workshop.findByIdAndDelete(wId).then((result) => {
-      if (!result) {
-        res.status(404).json(failAction("Not found! ", 404));
-      } else {
-        //images logic
 
-        const pathImg = "upload/images/" + result.photo;
-        fileHelper.deleteFiles(pathImg);
-        res.status(410).json(
-          successAction({
-            data: result,
-            statusCode: 410,
-            message: "successfully deleted! ",
-          })
-        );
+  Workshop.findByIdAndDelete(wId)
+    .then((result) => {
+      if (!result) {
+        res.status(208).json({
+          isError: true,
+          title: "Error",
+          message: "Image is not given",
+        });
       }
+      const pathImg = "upload/images/" + result.photo;
+      if (fs.existsSync(pathImg)) {
+        fileHelper.deleteFiles(pathImg);
+      } //photo exists
+
+      res.status(208).json({
+        data: result,
+        statusCode: 410,
+        message: "successfully deleted! ",
+      });
+    })
+    .catch((err) => {
+      failAction("Not found! ");
     });
-  } catch (err) {
-    res.status(404).json(failAction(err, 404));
-  }
 };

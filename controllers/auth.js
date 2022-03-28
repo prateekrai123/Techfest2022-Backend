@@ -44,7 +44,7 @@ exports.signIn = async (req, res) => {
         const token = await jwt.sign(
           { id: user._id, role: user.role },
           process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: "1h" }
+          { expiresIn: "3h" }
         );
         res.cookie("token", token, { expire: new Date() + 1000 });
         return res.status(200).json({
@@ -106,6 +106,11 @@ exports.signUp = async (req, res) => {
           collegeName: "Sant Longowal Institute of Engineering and Technology",
           userId: userId,
           hasPaidEntry: true,
+          paymentDetails: {
+            isSuccess: true,
+            subscriptionType: 599,
+            paymentStatus: "Sliet mail Domain",
+          },
           regNo: eArr[0],
           referralCode: referralCode,
           institution: "sliet",
@@ -242,12 +247,25 @@ module.exports.verifyUser = async (req, res) => {
       user.isVerified = true;
       await user.save();
       await verifyToken.findOneAndDelete({ token: token });
-      return res.status(200).json(successAction("The user is verified"));
+
+      return res.render("verifyuser", {
+        isError: false,
+        message: "The user is verified successfully!",
+      });
+      // return res.status(200).json(successAction("The user is verified"));
     } else {
-      return res.status(404).json(failAction("The token is expired"));
+      return res.render("verifyuser", {
+        isError: true,
+        message: "The token is expired!",
+      });
+      // return res.status(404).json(failAction("The token is expired"));
     }
   } else {
-    return res.status(404).json(failAction("Cannot get token"));
+    return res.render("verifyuser", {
+      isError: true,
+      message: "Cannot get token",
+    });
+    // return res.status(404).json(failAction("Cannot get token"));
   }
 };
 

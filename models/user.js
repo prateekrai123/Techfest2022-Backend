@@ -96,6 +96,27 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
+    paymentDetails: {
+      paymentId: {
+        type: String,
+      },
+      subscriptionType: {
+        type: String,
+      },
+      paymentStatus: {
+        type: String,
+      },
+      isSuccess: {
+        type: Boolean,
+        default: false,
+      },
+      paymentIntent: {
+        type: String,
+      },
+      payUserDetail: {
+        type: mongoose.SchemaTypes.Mixed,
+      },
+    },
     events: [
       {
         type: mongoose.Schema.Types.ObjectId,
