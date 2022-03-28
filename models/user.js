@@ -96,9 +96,6 @@ const userSchema = mongoose.Schema(
       type: Boolean,
       default: false,
     },
-    paymentId: {
-      type: String,
-    },
     events: [
       {
         type: mongoose.Schema.Types.ObjectId,
