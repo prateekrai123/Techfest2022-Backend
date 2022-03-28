@@ -240,18 +240,13 @@ module.exports.updateUser = (req, res) => {
     yearOfStudy,
     whatsappPhoneNumber,
     telegramPhoneNumber,
-  } = req.body;
+  } = req.body.data;
 
   if (
     !name ||
     !email ||
     !phone ||
     !dob ||
-    !collegeName ||
-    !instituteAddress ||
-    !course ||
-    !branchOfStudy ||
-    !yearOfStudy ||
     !whatsappPhoneNumber ||
     !telegramPhoneNumber
   ) {
@@ -262,7 +257,7 @@ module.exports.updateUser = (req, res) => {
 
   User.findOneAndUpdate(
     { _id: req.user._id },
-    { $set: req.body },
+    { $set: req.body.data },
     { new: true, useFindAndModify: false },
     (err, user) => {
       if (err || !user) {
