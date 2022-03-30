@@ -326,7 +326,10 @@ exports.forgotPassword = async (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(400).json(failAction(errors.array()[0]));
+    return res.status(200).json({
+      isError: true,
+      message: errors,
+    });
   }
 
   const { email } = await req.body;
@@ -334,7 +337,10 @@ exports.forgotPassword = async (req, res) => {
 
   User.findOne({ email: email }, async (err, user) => {
     if (err || !user) {
-      res.status(400).json(failAction("The email is not registered"));
+      return res.status(200).json({
+        isError: true,
+        message: "The email is not registered",
+      });
     }
     try {
       await verifyToken.findOneAndDelete({ email: email });
@@ -359,7 +365,10 @@ exports.forgotPassword = async (req, res) => {
         .status(200)
         .json(successAction("The verification email is successfully sent"));
     } catch (err) {
-      // return res.status(400).json(failAction(err));
+      return res.status(200).json({
+        isError: true,
+        message: err,
+      });
     }
   });
 };
