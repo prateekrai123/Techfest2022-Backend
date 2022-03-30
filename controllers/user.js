@@ -242,21 +242,14 @@ module.exports.updateUser = (req, res) => {
     telegramPhoneNumber,
   } = req.body.data;
 
-  if (
-    !name ||
-    !email ||
-    !phone ||
-    !dob ||
-    !whatsappPhoneNumber ||
-    !telegramPhoneNumber
-  ) {
+  if (!phone || !dob || !whatsappPhoneNumber || !telegramPhoneNumber) {
     req.body["isProfileComplete"] = false;
   } else {
     req.body["isProfileComplete"] = true;
   }
 
   User.findOneAndUpdate(
-    { _id: req.user._id },
+    { email: email },
     { $set: req.body.data },
     { new: true, useFindAndModify: false },
     (err, user) => {
