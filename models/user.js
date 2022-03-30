@@ -82,7 +82,6 @@ const userSchema = mongoose.Schema(
     },
     isProfileComplete: {
       type: Boolean,
-      default: false,
     },
     institution: {
       type: String,
