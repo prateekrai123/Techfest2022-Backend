@@ -78,7 +78,6 @@ const userSchema = mongoose.Schema(
     },
     isVerified: {
       type: Boolean,
-      default: false,
     },
     isProfileComplete: {
       type: Boolean,
@@ -93,7 +92,6 @@ const userSchema = mongoose.Schema(
     },
     hasPaidEntry: {
       type: Boolean,
-      default: false,
     },
     paymentDetails: {
       paymentId: {
