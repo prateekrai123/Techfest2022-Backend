@@ -228,29 +228,19 @@ module.exports.updateUser = (req, res) => {
     return res.status(400).json(failAction(errors.array()[0]));
   }
 
-  const {
-    name,
-    email,
-    phone,
-    dob,
-    collegeName,
-    instituteAddress,
-    course,
-    branchOfStudy,
-    yearOfStudy,
-    whatsappPhoneNumber,
-    telegramPhoneNumber,
-  } = req.body.data;
+  const { email, phone, dob, whatsappPhoneNumber } = req.body.data;
 
-  if (!phone || !dob || !whatsappPhoneNumber || !telegramPhoneNumber) {
-    req.body["isProfileComplete"] = false;
+  let isProfileCompplete = true;
+
+  if (!phone || !dob || !whatsappPhoneNumber) {
+    isProfileCompplete = false;
   } else {
-    req.body["isProfileComplete"] = true;
+    isProfileCompplete = true;
   }
 
   User.findOneAndUpdate(
     { email: email },
-    { $set: req.body.data },
+    { $set: req.body.data, $set: { isProfileCompplete: isProfileCompplete } },
     { new: true, useFindAndModify: false },
     (err, user) => {
       if (err || !user) {
