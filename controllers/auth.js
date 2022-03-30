@@ -333,7 +333,6 @@ exports.forgotPassword = async (req, res) => {
   }
 
   const { email } = await req.body;
-  console.log(email);
 
   User.findOne({ email: email }, async (err, user) => {
     if (err || !user) {
@@ -352,7 +351,7 @@ exports.forgotPassword = async (req, res) => {
         email: req.body.email,
       }).save();
 
-      const uri = `http://localhost:4000/forget-password-token/${token}`;
+      const uri = `http://api.techfestsliet.com/forget-password-token/${token}`;
 
       mail.sendMail({
         to: req.body.email,
