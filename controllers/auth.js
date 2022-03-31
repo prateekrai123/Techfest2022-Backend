@@ -412,16 +412,15 @@ exports.changePassword = async (req, res) => {
   const encryptedPassword = await bcrypt.hash(password, 10);
 
   try {
-    await User.findOneAndUpdate(
+    User.findOneAndUpdate(
       { email: email },
       { $set: { password: encryptedPassword } },
       (err, user) => {
         if (err && !user) {
           console.log(err);
           return res.status(404).json({ message: "Cannot update password" });
-        } else if (!user) {
-          return res.status(400).json({ message: "Email is not registered" });
         }
+        return res.status(200).json({ message: "Password is changed" });
       }
     );
   } catch (err) {
