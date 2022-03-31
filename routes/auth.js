@@ -71,7 +71,7 @@ router.post(
 router.get("/forget-password-token/:token", changeForgotPassword);
 
 router.post(
-  "/chage-password",
+  "/change-password",
   [
     check("password", "Password is required"),
     check("email", "Email is required").isEmail(),

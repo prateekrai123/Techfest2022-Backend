@@ -413,7 +413,7 @@ exports.changePassword = async (req, res) => {
     const encryptedPassword = await bcrypt.hash(password, 10);
 
     try {
-      await User.findByIdAndUpdate(
+      await User.findOneAndUpdate(
         { email: email },
         { $set: { password: encryptedPassword } },
         (err, user) => {
