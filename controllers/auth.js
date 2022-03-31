@@ -425,8 +425,8 @@ exports.changePassword = async (req, res) => {
           if (err && !user) {
             console.log(err);
             return res.status(404).json({ message: "Cannot update password" });
-          } else {
-            return res.status(200).json({ message: "Password is changed" });
+          } else if (!user) {
+            return res.status(400).json({ message: "Email is not registered" });
           }
         }
       );
