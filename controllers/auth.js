@@ -390,7 +390,7 @@ exports.changeForgotPassword = (req, res) => {
     }
 
     try {
-      ejs.renderFile("../views/forgotPassword.ejs", { email: token.email });
+      ejs.render("views/forgotPassword.ejs", { email: token.email });
     } catch (err) {
       return res.status(404).json("Some error occured" + err);
     }
