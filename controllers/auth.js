@@ -7,6 +7,7 @@ const jwt = require("jsonwebtoken");
 const { failAction, successAction } = require("../utils/response");
 const verifyToken = require("../models/verifyToken");
 const mail = require("../utils/mail");
+const ejs = require("ejs");
 
 exports.signIn = async (req, res) => {
   const errors = validationResult(req);
