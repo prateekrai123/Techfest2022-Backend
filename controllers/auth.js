@@ -1,4 +1,4 @@
-const { validationResult } = require("express-validator");
+const { validationResult, body } = require("express-validator");
 const User = require("../models/user");
 const uuid = require("uuid");
 const bcrypt = require("bcrypt");
@@ -400,13 +400,17 @@ exports.changeForgotPassword = (req, res) => {
 exports.changePassword = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
+    console.log(errors);
+    console.log(body);
     return res.status(400).json(failAction(errors));
   }
 
   const { email, password } = req.body;
+  console.log(email, password);
 
   await User.findOne({ email: email }, async (err, user) => {
     if (err || !user) {
+      console.log(err);
       return res.status(401).json(failAction("User not found"));
     }
 
@@ -426,7 +430,8 @@ exports.changePassword = async (req, res) => {
         }
       );
     } catch (err) {
-      failAction(err);
+      console.log(err);
+      return res.status(401).json(failAction(err));
     }
   });
 };
