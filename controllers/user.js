@@ -249,3 +249,12 @@ module.exports.updateUser = (req, res) => {
     }
   );
 };
+
+exports.addTeamMembers = async (req, res, next) => {
+  const email = req.body.email;
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    res.status(208).json({ message: "Not found" });
+  }
+};
