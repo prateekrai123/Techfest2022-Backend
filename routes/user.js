@@ -40,7 +40,6 @@ router.post(
   "/pushWorkshop",
 
   isAuth,
-  hasPaymendSuccess,
   [check("workshop", "workshop is required")],
   pushWorkshop
 );
