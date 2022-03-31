@@ -399,6 +399,7 @@ exports.changeForgotPassword = (req, res) => {
 
 exports.changePassword = async (req, res) => {
   const errors = validationResult(req);
+  console.log(req)
   if (!errors.isEmpty()) {
     console.log(errors);
     console.log(body);
