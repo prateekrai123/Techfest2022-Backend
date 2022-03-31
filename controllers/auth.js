@@ -409,32 +409,25 @@ exports.changePassword = async (req, res) => {
   const { email, password } = req.body;
   console.log(email, password);
 
-  await User.findOne({ email: email }, async (err, user) => {
-    if (err || !user) {
-      console.log(err);
-      return res.status(401).json(failAction("User not found"));
-    }
+  const encryptedPassword = await bcrypt.hash(password, 10);
 
-    const encryptedPassword = await bcrypt.hash(password, 10);
-
-    try {
-      await User.findOneAndUpdate(
-        { email: email },
-        { $set: { password: encryptedPassword } },
-        (err, user) => {
-          if (err && !user) {
-            console.log(err);
-            return res.status(404).json({ message: "Cannot update password" });
-          } else if (!user) {
-            return res.status(400).json({ message: "Email is not registered" });
-          }
+  try {
+    await User.findOneAndUpdate(
+      { email: email },
+      { $set: { password: encryptedPassword } },
+      (err, user) => {
+        if (err && !user) {
+          console.log(err);
+          return res.status(404).json({ message: "Cannot update password" });
+        } else if (!user) {
+          return res.status(400).json({ message: "Email is not registered" });
         }
-      );
-    } catch (err) {
-      console.log(err);
-      return res.status(201).json({ message: err });
-    }
-  });
+      }
+    );
+  } catch (err) {
+    console.log(err);
+    return res.status(201).json({ message: err });
+  }
 };
 
 //middlewares
