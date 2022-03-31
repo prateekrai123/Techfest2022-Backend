@@ -400,7 +400,7 @@ exports.changeForgotPassword = (req, res) => {
 exports.changePassword = async (req, res) => {
   const errors = validationResult(req);
   if (!errors.isEmpty()) {
-    return res.status(400).json(failAction(errors[0].msg));
+    return res.status(400).json(failAction(errors));
   }
 
   const { email, password } = req.body;
