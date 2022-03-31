@@ -399,7 +399,7 @@ exports.changeForgotPassword = (req, res) => {
 
 exports.changePassword = async (req, res) => {
   const errors = validationResult(req);
-  console.log(req)
+  console.log(req);
   if (!errors.isEmpty()) {
     console.log(errors);
     console.log(body);
@@ -424,9 +424,9 @@ exports.changePassword = async (req, res) => {
         (err, user) => {
           if (err && !user) {
             console.log(err);
-            return res.status(404).json(failAction("Cannot update password"));
+            return res.status(404).json({ message: "Cannot update password" });
           } else {
-            return res.status(200).json(successAction("Password is changed"));
+            return res.status(200).json({ message: "Password is changed" });
           }
         }
       );
