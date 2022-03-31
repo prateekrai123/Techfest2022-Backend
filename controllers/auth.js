@@ -352,7 +352,7 @@ exports.forgotPassword = async (req, res) => {
         email: req.body.email,
       }).save();
 
-      const uri = `http://api.techfestsliet.com/forget-password-token/${token}`;
+      const uri = `https://api.techfestsliet.com/forget-password-token/${token}`;
 
       mail.sendMail({
         to: req.body.email,
@@ -432,7 +432,7 @@ exports.changePassword = async (req, res) => {
       );
     } catch (err) {
       console.log(err);
-      return res.status(401).json(failAction(err));
+      return res.status(201).json({ message: err });
     }
   });
 };
