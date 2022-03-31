@@ -381,17 +381,15 @@ exports.changeForgotPassword = (req, res) => {
 
   const token = req.params.token;
 
-  let email;
-
-  verifyToken.findOne({ token: token }, async (err, res) => {
-    if (err || !res) {
+  verifyToken.findOne({ token: token }, async (err, token) => {
+    if (err || !token) {
       return res
         .status(401)
         .json(failAction("Token not found or token expired"));
     }
 
     try {
-      email = res.email;
+      ejs.renderFile("../views/forgotPassword.ejs", { email: token.email });
     } catch (err) {
       return res.status(404).json("Some error occured");
     }
