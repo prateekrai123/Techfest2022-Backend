@@ -117,7 +117,9 @@ exports.updateCoordinator = (req, res, next) => {
   //     .json({ isError: true, title: "Error", message: "Image is not given" });
   // }
 
-  Coordinator.updateOne(cid, (err, c) => {
+  const payLoad = req.body;
+
+  Coordinator.findByIdAndUpdate(cid, { $set: { payLoad } }, (err, c) => {
     if (err || !c) {
       console.log(err);
       return res
