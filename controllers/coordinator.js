@@ -92,7 +92,7 @@ exports.getCoordinatorById = (req, res, next) => {
 };
 
 exports.updateCoordinator = (req, res, next) => {
-  const cid = req.params.cid;
+  const cid = mongoose.Types.ObjectId(req.params.cid);
 
   const {
     coordinatorName,
