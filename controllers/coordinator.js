@@ -92,7 +92,7 @@ exports.getCoordinatorById = (req, res, next) => {
 };
 
 exports.updateCoordinator = (req, res, next) => {
-  const cid = req.body.coordinator;
+  const cid = mongoose.Types.ObjectId(req.body.coordinator);
 
   const {
     coordinatorName,
@@ -117,8 +117,13 @@ exports.updateCoordinator = (req, res, next) => {
   //     .json({ isError: true, title: "Error", message: "Image is not given" });
   // }
 
-  Coordinator.updateOne(cid).then((c) => {
-    console.log(c);
+  Coordinator.updateOne(cid, (err, c) => {
+    if (err || !c) {
+      console.log(err);
+      return res
+        .status(201)
+        .json({ isError: true, message: "Cannot update coordinator" });
+    }
     return res.status(200).json({
       message: "get",
       c,
