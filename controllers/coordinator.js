@@ -116,7 +116,8 @@ exports.updateCoordinator = (req, res, next) => {
   // }
 
   Coordinator.updateOne(cid).then((c) => {
-    res.status(200).json({
+    console.log(c);
+    return res.status(200).json({
       message: "get",
       c,
     });
