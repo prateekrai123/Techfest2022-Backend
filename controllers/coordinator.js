@@ -102,6 +102,8 @@ exports.updateCoordinator = (req, res, next) => {
     coordinatorDesignation,
   } = req.body;
 
+  console.log(req.body);
+
   let imageUrl = req.body.imageUrl;
 
   if (req.file) {
