@@ -13,7 +13,7 @@ const TeamSchema = new mongoose.Schema({
     type: String,
     required: true,
   },
-  description: {
+  phone: {
     type: String,
   },
 });
