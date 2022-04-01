@@ -33,7 +33,7 @@ router.get(
 router.get("/getStudetntCoordniator", coordinatorController.getStudentCo);
 router.get("/getFacultyCoordniator", coordinatorController.getFacultyCo);
 
-router.put(
+router.post(
   "/update/:cid",
   isAuth,
   [check("cid", "Id should be proper").isLength({ min: 24 })],
