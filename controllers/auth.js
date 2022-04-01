@@ -274,12 +274,17 @@ module.exports.resetPassword = (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
-    return res.status(400).json(failAction(errors.array()[0]));
+    console.log(errors.array()[0].msg);
+    return res
+      .status(208)
+      .json({ title: "Error", message: errors.array()[0].msg });
   }
 
   User.findOne({ email: req.body.email }, async (err, user) => {
     if (err || !user) {
-      return res.status(404).json(failAction("User not found"));
+      return res
+        .status(208)
+        .json({ title: "Error", message: "User not found" });
     } else {
       try {
         const condition = await bcrypt.compare(
@@ -297,22 +302,22 @@ module.exports.resetPassword = (req, res) => {
               if (err && !user) {
                 console.log(err);
                 return res
-                  .status(404)
-                  .json(failAction("Cannot update password"));
+                  .status(208)
+                  .json({ title: "Error", message: "Cannot update password" });
               } else {
                 return res
                   .status(200)
-                  .json(successAction("Password is changed"));
+                  .json({ title: "Success", message: "Password is changed" });
               }
             }
           );
         } else {
           return res
-            .status(400)
-            .json(failAction("The email is not registered"));
+            .status(208)
+            .json({ title: "Error", message: "The email is not registered" });
         }
       } catch (err) {
-        return res.status(400).json(failAction("Cannot update password"));
+        return res.status(208).json(failAction("Cannot update password"));
       }
     }
   });
@@ -327,9 +332,11 @@ exports.forgotPassword = async (req, res) => {
   const errors = validationResult(req);
 
   if (!errors.isEmpty()) {
+    // console.log(errors.array);
     return res.status(200).json({
       isError: true,
-      message: errors,
+      title: "Error",
+      message: "Email is required",
     });
   }
 
@@ -339,6 +346,7 @@ exports.forgotPassword = async (req, res) => {
     if (err || !user) {
       return res.status(200).json({
         isError: true,
+        title: "Error",
         message: "The email is not registered",
       });
     }
@@ -361,12 +369,14 @@ exports.forgotPassword = async (req, res) => {
         <p><a href=${uri}>Click here</a></p>`,
       });
 
-      res
-        .status(200)
-        .json(successAction("The verification email is successfully sent"));
+      res.status(200).json({
+        title: "Error",
+        message: "The verification email is successfully sent",
+      });
     } catch (err) {
       return res.status(200).json({
         isError: true,
+        title: "Error",
         message: err,
       });
     }
