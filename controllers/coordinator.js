@@ -114,7 +114,7 @@ exports.updateCoordinator = (req, res, next) => {
   //     .json({ isError: true, title: "Error", message: "Image is not given" });
   // }
 
-  Coordinator.updateOne(id).then((c) => {
+  Coordinator.updateOne(cid).then((c) => {
     res.status(200).json({
       message: "get",
       c,
