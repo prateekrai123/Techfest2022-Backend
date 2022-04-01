@@ -165,16 +165,18 @@ module.exports.pushWorkshop = async (req, res) => {
       message: "Workshop not found!",
     });
   }
-  if (
-    workshopExisted.workshopMode === "offline" &&
-    user.paymentDetails.subscriptionType !== "599"
-  ) {
-    return res.status(208).json({
-      isError: true,
-      title: "Payment Error",
-      message: "This mode is for Gold subscription users!",
-    });
-  }
+
+  //pay check
+  // if (
+  //   workshopExisted.workshopMode === "offline" &&
+  //   user.paymentDetails.subscriptionType !== "599"
+  // ) {
+  //   return res.status(208).json({
+  //     isError: true,
+  //     title: "Payment Error",
+  //     message: "This mode is for Gold subscription users!",
+  //   });
+  // }
   const workshopsListed = user.workshops.map((w) => {
     return w._id.toString();
   });
@@ -248,4 +250,13 @@ module.exports.updateUser = (req, res) => {
       return res.status(201).json(successAction(user));
     }
   );
+};
+
+exports.addTeamMembers = async (req, res, next) => {
+  const email = req.body.email;
+
+  const user = await User.findOne({ email });
+  if (!user) {
+    res.status(208).json({ message: "Not found" });
+  }
 };

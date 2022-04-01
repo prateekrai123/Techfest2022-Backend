@@ -114,12 +114,14 @@ const userSchema = mongoose.Schema(
         type: mongoose.SchemaTypes.Mixed,
       },
     },
+    teamMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
     events: [
       {
         type: mongoose.Schema.Types.ObjectId,
         ref: "Event",
       },
     ],
+
     workshops: [
       {
         type: mongoose.Schema.Types.ObjectId,

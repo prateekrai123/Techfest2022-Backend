@@ -33,6 +33,7 @@ module.exports.addEvents = (req, res) => {
     domain,
     driveLink,
     studentCoordinator,
+    ePrizeWorth,
   } = req.body;
   // return console.log(startDate, endDate);
   const photo = req.file.filename;
@@ -67,6 +68,7 @@ module.exports.addEvents = (req, res) => {
         endDate,
         eventMode,
         domain,
+        ePrizeWorth,
         driveLink,
         studentCoordinator: studentCoordinatorArr,
       };

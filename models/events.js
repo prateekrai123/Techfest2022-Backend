@@ -26,6 +26,10 @@ const EventSchema = new mongoose.Schema({
     type: String,
     trim: true,
   },
+  ePrizeWorth: {
+    type: Number,
+    trim: true,
+  },
   photo: {
     type: String,
   },
