@@ -107,7 +107,7 @@ exports.updateCoordinator = (req, res, next) => {
     imageUrl = req.file.filename;
   }
 
-  return console.log(cid, req.body);
+  // return console.log(cid, req.body);
   if (!imageUrl) {
     return res
       .status(208)
