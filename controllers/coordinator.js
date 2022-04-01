@@ -4,6 +4,7 @@ const path = require("path");
 const fs = require("fs");
 const { failAction, successAction } = require("../utils/response");
 const fileHelper = require("../utils/file");
+const mongoose = require("mongoose");
 
 exports.createCoordinator = async (req, res, next) => {
   // return console.log(req.body.coordinatorDesignation);
@@ -143,7 +144,7 @@ exports.updateGetCoordinator = (req, res, next) => {
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
-  const cid = req.params.cid;
+  const cid = mongoose.Types.ObjectId(req.params.cid);
   console.log(cid);
   Coordinator.findById(cid).then((err, c) => {
     if (err) {
