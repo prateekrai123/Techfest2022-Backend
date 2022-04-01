@@ -108,11 +108,11 @@ exports.updateCoordinator = (req, res, next) => {
   }
 
   // return console.log(cid, req.body);
-  if (!imageUrl) {
-    return res
-      .status(208)
-      .json({ isError: true, title: "Error", message: "Image is not given" });
-  }
+  // if (!imageUrl) {
+  //   return res
+  //     .status(208)
+  //     .json({ isError: true, title: "Error", message: "Image is not given" });
+  // }
 
   Coordinator.updateOne(id).then((c) => {
     res.status(200).json({
