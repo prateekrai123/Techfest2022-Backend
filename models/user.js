@@ -114,7 +114,13 @@ const userSchema = mongoose.Schema(
         type: mongoose.SchemaTypes.Mixed,
       },
     },
-    teamMembers: [{ type: mongoose.Schema.Types.ObjectId, ref: "User" }],
+    teamMembers: {
+      teamMembersLeader: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      teamMembersDetails: [
+        { type: mongoose.Schema.Types.ObjectId, ref: "User" },
+      ],
+    },
+
     events: [
       {
         type: mongoose.Schema.Types.ObjectId,

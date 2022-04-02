@@ -252,11 +252,56 @@ module.exports.updateUser = (req, res) => {
   );
 };
 
-exports.addTeamMembers = async (req, res, next) => {
+exports.addTeamMembersMail = async (req, res, next) => {
   const email = req.body.email;
 
-  const user = await User.findOne({ email });
-  if (!user) {
-    res.status(208).json({ message: "Not found" });
+  const userTeam = await User.findOne({ email });
+  if (!userTeam) {
+    return res
+      .status(208)
+      .json({ isError: true, title: "Error", message: "User Not found!" });
   }
+
+  const userAdder = await User.findById(req.userId);
+  const userTeamExisted = userAdder// return console.log(userAdder);
+  // if (
+  //   userAdder.paymentDetails.subscriptionType === "599" &&
+  //   userTeam.paymentDetails.subscriptionType !== "599"
+  // ) {
+  //   return res.status(208).json({
+  //     isError: true,
+  //     title: "Error",
+  //     message: "Team member have not same subscriptions!",
+  //   });
+  // }
+
+  // User.findByIdAndUpdate(
+  //   {_id:userTeam._id}
+  //   ,
+
+  // )
+  .User.findByIdAndUpdate(
+    { _id: req.userId },
+    // { $push: { teamMembers.teamMembersDetails: userTeam } },
+    (err, user) => {
+      if (err || !user) {
+        return res.status(208).json({
+          isError: true,
+          title: "Error",
+          message: "Cannot add team",
+        });
+      }
+
+      return res.status(201).json({
+        isError: false,
+        title: "Success",
+        message: "Team mail is added",
+      });
+    }
+  );
+  next();
 };
+
+// exports.createTeamMember = (req, res, next)=>{
+//   User.findByIdAndUpdate(_id:req.use)
+// }

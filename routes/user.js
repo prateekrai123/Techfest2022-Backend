@@ -9,6 +9,7 @@ const {
   pushWorkshop,
   getReferralCode,
   getVerifyUserWbe,
+  addTeamMembersMail,
 } = require("../controllers/user");
 const isAuth = require("../middleware/isAuth");
 
@@ -45,5 +46,11 @@ router.post(
 );
 
 router.get("/referralCode", getReferralCode);
+router.post(
+  "/addTeamMemberMail",
+  isAuth,
+  hasPaymendSuccess,
+  addTeamMembersMail
+);
 
 module.exports = router;
