@@ -114,12 +114,24 @@ const userSchema = mongoose.Schema(
         type: mongoose.SchemaTypes.Mixed,
       },
     },
-    teamMembers: {
-      teamMembersLeader: { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-      teamMembersDetails: [
-        { type: mongoose.Schema.Types.ObjectId, ref: "User" },
-      ],
-    },
+    teamMembers: [
+      {
+        teamMembersLeader: {
+          type: mongoose.Schema.Types.ObjectId,
+          ref: "User",
+        },
+        teamMembersDetails: [
+          {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+            isAccepted: {
+              type: Boolean,
+              default: false,
+            },
+          },
+        ],
+      },
+    ],
 
     events: [
       {

@@ -254,7 +254,7 @@ module.exports.updateUser = (req, res) => {
 
 exports.addTeamMembersMail = async (req, res, next) => {
   const email = req.body.email;
-
+  const memeberDomain = email.split("@")[1];
   const userTeam = await User.findOne({ email });
   if (!userTeam) {
     return res
@@ -263,8 +263,32 @@ exports.addTeamMembersMail = async (req, res, next) => {
   }
 
   const userAdder = await User.findById(req.userId);
-  const userTeamExisted = userAdder// return console.log(userAdder);
-  // if (
+  if (userAdder.email === email) {
+    return res.status(208).json({
+      isError: true,
+      title: "Mail Error",
+      message: "You cannot add yourself as ateam member!",
+    });
+  }
+  const userDomain = userAdder.email.split("@")[1];
+  if (userDomain === "sliet.ac.in" && memeberDomain !== "sliet.ac.in") {
+    return res.status(208).json({
+      isError: true,
+      title: "Mail Error",
+      message: "You cannot add team member who has mail other than sliet mail!",
+    });
+  }
+  // console.log(memeberDomain === "sliet.ac.in");
+  // console.log(userDomain == !"sliet.ac.in");
+  if (userDomain != "sliet.ac.in" && memeberDomain === "sliet.ac.in") {
+    return res.status(208).json({
+      isError: true,
+      title: "Mail Error",
+      message: "You cannot add team member who has sliet mail!",
+    });
+  }
+
+  const userTeamExisted = userAdder; // if ( // return console.log(userAdder);
   //   userAdder.paymentDetails.subscriptionType === "599" &&
   //   userTeam.paymentDetails.subscriptionType !== "599"
   // ) {
@@ -280,25 +304,25 @@ exports.addTeamMembersMail = async (req, res, next) => {
   //   ,
 
   // )
-  .User.findByIdAndUpdate(
-    { _id: req.userId },
-    // { $push: { teamMembers.teamMembersDetails: userTeam } },
-    (err, user) => {
-      if (err || !user) {
-        return res.status(208).json({
-          isError: true,
-          title: "Error",
-          message: "Cannot add team",
-        });
-      }
+  // .User.findByIdAndUpdate(
+  //   { _id: req.userId },
+  //   // { $push: { teamMembers.teamMembersDetails: userTeam } },
+  //   (err, user) => {
+  //     if (err || !user) {
+  //       return res.status(208).json({
+  //         isError: true,
+  //         title: "Error",
+  //         message: "Cannot add team",
+  //       });
+  //     }
 
-      return res.status(201).json({
-        isError: false,
-        title: "Success",
-        message: "Team mail is added",
-      });
-    }
-  );
+  //     return res.status(201).json({
+  //       isError: false,
+  //       title: "Success",
+  //       message: "Team mail is added",
+  //     });
+  //   }
+  // );
   next();
 };
 
