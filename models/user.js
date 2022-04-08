@@ -114,6 +114,14 @@ const userSchema = mongoose.Schema(
         type: mongoose.SchemaTypes.Mixed,
       },
     },
+    payPlan: {
+      type: String,
+    },
+    teams: [
+      {
+        id: mongoose.Schema.Types.ObjectId,
+      },
+    ],
     teamMembers: [
       {
         teamMembersLeader: {

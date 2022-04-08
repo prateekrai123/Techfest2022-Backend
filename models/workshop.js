@@ -45,6 +45,9 @@ const workshop = new Schema({
   photo: {
     type: String,
   },
+  participants: {
+    type: mongoose.Schema.Types.ObjectId,
+  },
 });
 
 module.exports = mongoose.model("Workshop", workshop);

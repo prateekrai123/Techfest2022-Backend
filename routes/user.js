@@ -46,11 +46,5 @@ router.post(
 );
 
 router.get("/referralCode", getReferralCode);
-router.post(
-  "/addTeamMemberMail",
-  isAuth,
-  hasPaymendSuccess,
-  addTeamMembersMail
-);
 
 module.exports = router;

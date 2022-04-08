@@ -210,6 +210,20 @@ module.exports.pushWorkshop = async (req, res) => {
         });
       }
 
+      Workshop.findByIdAndUpdate(
+        workshop._id,
+        { $push: { participants: user._id } },
+        (err, workshop) => {
+          if (err || !workshop) {
+            return res.status(200).json({
+              isError: true,
+              title: "Error",
+              message: "Cannot add workshop",
+            });
+          }
+        }
+      );
+
       return res.status(201).json({
         isError: false,
         title: "Success",
@@ -251,81 +265,3 @@ module.exports.updateUser = (req, res) => {
     }
   );
 };
-
-exports.addTeamMembersMail = async (req, res, next) => {
-  const email = req.body.email;
-  const memeberDomain = email.split("@")[1];
-  const userTeam = await User.findOne({ email });
-  if (!userTeam) {
-    return res
-      .status(208)
-      .json({ isError: true, title: "Error", message: "User Not found!" });
-  }
-
-  const userAdder = await User.findById(req.userId);
-  if (userAdder.email === email) {
-    return res.status(208).json({
-      isError: true,
-      title: "Mail Error",
-      message: "You cannot add yourself as ateam member!",
-    });
-  }
-  const userDomain = userAdder.email.split("@")[1];
-  if (userDomain === "sliet.ac.in" && memeberDomain !== "sliet.ac.in") {
-    return res.status(208).json({
-      isError: true,
-      title: "Mail Error",
-      message: "You cannot add team member who has mail other than sliet mail!",
-    });
-  }
-  // console.log(memeberDomain === "sliet.ac.in");
-  // console.log(userDomain == !"sliet.ac.in");
-  if (userDomain != "sliet.ac.in" && memeberDomain === "sliet.ac.in") {
-    return res.status(208).json({
-      isError: true,
-      title: "Mail Error",
-      message: "You cannot add team member who has sliet mail!",
-    });
-  }
-
-  const userTeamExisted = userAdder; // if ( // return console.log(userAdder);
-  //   userAdder.paymentDetails.subscriptionType === "599" &&
-  //   userTeam.paymentDetails.subscriptionType !== "599"
-  // ) {
-  //   return res.status(208).json({
-  //     isError: true,
-  //     title: "Error",
-  //     message: "Team member have not same subscriptions!",
-  //   });
-  // }
-
-  // User.findByIdAndUpdate(
-  //   {_id:userTeam._id}
-  //   ,
-
-  // )
-  // .User.findByIdAndUpdate(
-  //   { _id: req.userId },
-  //   // { $push: { teamMembers.teamMembersDetails: userTeam } },
-  //   (err, user) => {
-  //     if (err || !user) {
-  //       return res.status(208).json({
-  //         isError: true,
-  //         title: "Error",
-  //         message: "Cannot add team",
-  //       });
-  //     }
-
-  //     return res.status(201).json({
-  //       isError: false,
-  //       title: "Success",
-  //       message: "Team mail is added",
-  //     });
-  //   }
-  // );
-  next();
-};
-
-// exports.createTeamMember = (req, res, next)=>{
-//   User.findByIdAndUpdate(_id:req.use)
-// }
