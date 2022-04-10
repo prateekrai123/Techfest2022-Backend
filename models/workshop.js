@@ -41,7 +41,6 @@ const workshop = new Schema({
     required: true,
   },
   studentCoordinator: [{ type: Schema.Types.ObjectId, ref: "Coordinator" }],
-  facultyCoordinator: [{ type: Schema.Types.ObjectId, ref: "Coordinator" }],
   photo: {
     type: String,
   },

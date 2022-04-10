@@ -50,12 +50,10 @@ exports.createWorkshop = (req, res) => {
     endDate,
     workshopMode,
     studentCoordinator,
-    facultyCoordinator,
   } = req.body;
 
   // return console.log(facultyCoordinator, studentCoordinator);
   let studentCoordinatorArr = studentCoordinator.split(",");
-  let facultyCoordinatorArr = facultyCoordinator.split(",");
 
   Workshop.findOne({ workshopName: wsName }, (err, w) => {
     if (err) {
@@ -80,7 +78,6 @@ exports.createWorkshop = (req, res) => {
         endDate: endDate,
         workshopMode: workshopMode,
         studentCoordinator: studentCoordinatorArr,
-        facultyCoordinator: facultyCoordinatorArr,
         photo: req.file.filename,
       });
       //   console.log(w1);
@@ -112,12 +109,6 @@ exports.createWorkshop = (req, res) => {
 exports.getAllWokshop = (req, res) => {
   Workshop.find()
     .populate("studentCoordinator", [
-      "coordinatorName",
-      "coordinatorEmail",
-      "coordinatorPhone",
-      "photo",
-    ])
-    .populate("facultyCoordinator", [
       "coordinatorName",
       "coordinatorEmail",
       "coordinatorPhone",
