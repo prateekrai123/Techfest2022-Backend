@@ -213,7 +213,7 @@ exports.addTeamMember = async (req, res, next) => {
 exports.verifyTeamInvitation = async (req, res) => {
   const teamId = req.params.teamId;
   const userId = req.params.userId;
-  // return console.log(teamId.length);
+  // return console.log(teamId);
   if (teamId.length != 24 || teamId.length != 24) {
     return res.render("teamInvitation", {
       isError: true,
@@ -223,7 +223,7 @@ exports.verifyTeamInvitation = async (req, res) => {
   const team = await Team.findById(teamId);
   const user = await User.findById(userId);
 
-  // return console.log(userId);
+  // return console.log(team);
   if (!team || !user) {
     return res.render("teamInvitation", {
       isError: true,
@@ -264,7 +264,8 @@ exports.verifyTeamInvitation = async (req, res) => {
   );
 
   Team.findOneAndUpdate(
-    { teamId, "members.memberId": userId },
+    { _id: teamId, "members.memberId": userId },
+
     { $set: { "members.$.status": true } },
     { new: true, useFindAndModify: false },
     (err, team) => {
@@ -275,6 +276,7 @@ exports.verifyTeamInvitation = async (req, res) => {
           message: "Something went  wrong!",
         });
       }
+      // return console.log(team);
       res.render("teamInvitation", {
         isError: false,
         message: "Successfully accepted!",
