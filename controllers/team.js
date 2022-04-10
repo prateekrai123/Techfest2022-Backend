@@ -277,10 +277,10 @@ exports.verifyTeamInvitation = async (req, res) => {
         });
       }
       // return console.log(team);
-      res.render("teamInvitation", {
-        isError: false,
-        message: "Successfully accepted!",
-      });
     }
   );
+  res.render("teamInvitation", {
+    isError: false,
+    message: "Successfully accepted!",
+  });
 };
