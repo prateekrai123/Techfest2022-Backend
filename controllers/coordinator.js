@@ -91,9 +91,10 @@ exports.getCoordinatorById = (req, res, next) => {
   });
 };
 
-exports.updateCoordinator = (req, res, next) => {
-  const cid = mongoose.Types.ObjectId(req.body.coordinator);
+exports.updateCoordinator = async (req, res, next) => {
+  const cid = req.body.cid;
 
+  // return console.log(cid);
   const {
     coordinatorName,
     coordinatorPhone,
@@ -102,7 +103,7 @@ exports.updateCoordinator = (req, res, next) => {
     coordinatorDesignation,
   } = req.body;
 
-  console.log(req.body);
+  // return console.log(req.body);
 
   let imageUrl = req.body.imageUrl;
 
@@ -110,7 +111,7 @@ exports.updateCoordinator = (req, res, next) => {
     imageUrl = req.file.filename;
   }
 
-  // return console.log(cid, req.body);
+  // return console.log(imageUrl);
   // if (!imageUrl) {
   //   return res
   //     .status(208)
@@ -119,18 +120,65 @@ exports.updateCoordinator = (req, res, next) => {
 
   const payLoad = req.body;
 
-  Coordinator.findByIdAndUpdate(cid, { $set: { payLoad } }, (err, c) => {
-    if (err || !c) {
-      console.log(err);
-      return res
-        .status(201)
-        .json({ isError: true, message: "Cannot update coordinator" });
-    }
-    return res.status(200).json({
-      message: "get",
-      c,
+  // Coordinator.findById(
+  //   cid,
+  //   { $set: { payLoad } },
+  //   { new: true, useFindAndModify: false },
+  //   (err, c) => {
+  //     if (err || !c) {
+  //       console.log(err);
+  //       return res
+  //         .status(201)
+  //         .json({ isError: true, message: "Cannot update coordinator" });
+  //     }
+  //     return res.status(200).json({
+  //       title: "Success",
+  //       message: "get",
+  //       c,
+  //     });
+  //   }
+  // );
+
+  const coordinatorExist = await Coordinator.findOne({ coordinatorEmail });
+  // if (
+  //   coordinatorExist && coordinatorExist.coordinatorEmail !==
+  // ) {
+  //   return res.status(201).json({
+  //     isError: true,
+  //     title: "Error",
+  //     message: "Coordinator already exist with this mail!",
+  //   });
+  // }
+
+  Coordinator.findById(cid)
+    .then((c) => {
+      if (!c) {
+        return res.status(201).json({
+          isError: true,
+          title: "Error",
+          message: "Cannot update coordinator",
+        });
+      }
+      c.coordinatorName = coordinatorName;
+      c.coordinatorPhone = coordinatorPhone;
+      c.coordinatorEmail = coordinatorEmail;
+      c.coordinatorType = coordinatorType;
+      c.coordinatorDesignation = coordinatorDesignation;
+      c.photo = imageUrl;
+      return c.save();
+    })
+    .then((result) => {
+      return res.status(200).json({
+        title: "Success",
+        message: "get",
+        result,
+      });
+    })
+    .catch((err) => {
+      return res.status(208).json({
+        message: "Page not found! ",
+      });
     });
-  });
 };
 
 exports.getAllDetailsCoordinator = (req, res) => {

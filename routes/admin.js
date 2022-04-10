@@ -2,7 +2,7 @@ const express = require("express");
 const adminCon = require("../controllers/admin");
 const isAuth = require("../middleware/isAuth");
 const router = express.Router();
-
-router.get("/tfdetails", isAuth, adminCon.tfdetails);
+const isAdmin = require("../middleware/isAdmin");
+router.get("/tfdetails", isAuth, isAdmin, adminCon.tfdetails);
 
 module.exports = router;

@@ -4,6 +4,7 @@ const { validationResult } = require("express-validator");
 const { findById } = require("../models/user");
 const Event = require("../models/events");
 const Workshop = require("../models/workshop");
+const Team = require("../models/team");
 module.exports.getReferralCode = (req, res) => {
   const errors = validationResult(req);
 
@@ -52,13 +53,30 @@ module.exports.getAllUsers = (req, res) => {
     return res.status(400).json(failAction(errors.array()[0]));
   }
 
-  User.find({}, (err, users) => {
-    if (err || !users) {
-      return res.status(404).json(failAction("No users found"));
-    }
-
-    return res.status(201).json(successAction(users));
-  });
+  User.find()
+    .select([
+      "name",
+      "email",
+      "phone",
+      "whatsappPhoneNumber",
+      "telegramPhoneNumber",
+      "collegeName",
+      "branchOfStudy",
+      "course",
+      "referrals",
+      "yearOfStudy",
+      "hasPaidEntry",
+      "paymentDetails",
+      "teamMembers",
+      "events",
+      "workshops",
+    ])
+    .populate("teamMembers", "name")
+    .populate("events", "name")
+    .populate("workshops", "workshopName")
+    .exec((err, u) => {
+      res.status(200).json({ isError: false, users: u });
+    });
 };
 
 module.exports.getUserByEmail = (req, res) => {
@@ -81,8 +99,8 @@ module.exports.getUserByEmail = (req, res) => {
 
 module.exports.pushEvent = async (req, res) => {
   const userId = req.userId;
-  const event = req.body;
-
+  const event = req.body.event;
+  const teamId = req.body.teamId;
   const user = await User.findById(userId);
 
   if (!user) {
@@ -93,7 +111,7 @@ module.exports.pushEvent = async (req, res) => {
     });
   }
 
-  const eventExisted = await Event.findById(event._id);
+  const eventExisted = await Event.findById(event);
   if (!eventExisted) {
     return res.status(208).json({
       isError: true,
@@ -101,45 +119,120 @@ module.exports.pushEvent = async (req, res) => {
       message: "Event not found!",
     });
   }
-  if (
-    eventExisted.eventMode === "offline" &&
-    user.paymentDetails.subscriptionType !== "599"
-  ) {
-    return res.status(208).json({
-      isError: true,
-      title: "Payment Error",
-      message: "This mode is for Gold subscription users!",
+  // return console.log(req.body);
+  if (teamId === "self") {
+    if (
+      (eventExisted.eventMode === "offline" &&
+        user.paymentDetails.subscriptionType !== "599") ||
+      !user.paymentDetails.isSuccess
+    ) {
+      return res.status(208).json({
+        isError: true,
+        title: "Payment Error",
+        message: "Payment will begin shortly!",
+      });
+    }
+    const eventsListed = user.events.map((e) => {
+      return e._id.toString();
     });
-  }
-  const eventsListed = user.events.map((e) => {
-    return e._id.toString();
-  });
 
-  if (eventsListed.indexOf(event._id.toString()) !== -1) {
-    return res.status(208).json({
-      isError: true,
-      title: "Event Exist",
-      message: "Event Already Added",
+    if (eventsListed.indexOf(event) !== -1) {
+      return res.status(208).json({
+        isError: true,
+        title: "Event Exist",
+        message: "Event Already Added",
+      });
+    }
+    const userPush = await Event.findByIdAndUpdate(event, {
+      $push: { individual: user },
     });
-  }
+    User.findOneAndUpdate(
+      { _id: user._id },
+      { $push: { events: event } },
+      (err, user) => {
+        if (err || !user) {
+          return res.status(208).json({
+            isError: false,
+            title: "Error",
+            message: "Cannot add event",
+          });
+        }
 
-  User.findOneAndUpdate(
-    { _id: user._id },
-    { $push: { events: event } },
-    (err, user) => {
-      if (err || !user) {
+        return res
+          .status(201)
+          .json({ isError: true, title: "Success", message: "Event is added" });
+      }
+    );
+  } else {
+    const team = await Team.findById(teamId);
+    if (!team) {
+      return res.status(208).json({
+        isError: true,
+        title: "Team Error",
+        message: "Team not found!",
+      });
+    }
+    // return console.log(userId, team.leaderId);
+    if (userId !== team.leaderId.toString()) {
+      return res.status(208).json({
+        isError: true,
+        title: "Team Error",
+        message: "You are not leader of this team!",
+      });
+    }
+    const individualExist = user.events.map((u) => {
+      return u.toString();
+    });
+    // const teamMemberExistEvent = eventExisted.teams.map((t) => {
+    //   return t.toString();
+    // });
+    // return console.log(individualExist);
+    if (individualExist.indexOf(event) != -1) {
+      return res.status(208).json({
+        isError: true,
+        title: "Team Error",
+        message: "You have already register in this event!",
+      });
+    }
+    for (const teamMember of team.members) {
+      if (!teamMember.status) {
         return res.status(208).json({
-          isError: false,
-          title: "Error",
-          message: "Cannot add event",
+          isError: true,
+          title: "Team Error",
+          message: "Some team members haven't accepted the team invitation!",
         });
       }
 
-      return res
-        .status(201)
-        .json({ isError: true, title: "Success", message: "Event is added" });
+      const userMemberExistEvent = await User.findById(teamMember.memberId);
+      const userAddedEvents = await userMemberExistEvent.events.map((e) => {
+        return e.toString();
+      });
+      if (userAddedEvents.indexOf(event) != -1) {
+        return res.status(208).json({
+          isError: true,
+          title: "Team Error",
+          message: `${userMemberExistEvent.name} have already register in this event!`,
+        });
+      }
+
+      const userPushEvent = await User.findOneAndUpdate(
+        { _id: userMemberExistEvent._id },
+        { $push: { events: eventExisted } }
+      );
     }
-  );
+    const leaderPush = await User.findByIdAndUpdate(userId, {
+      $push: { events: eventExisted },
+    });
+    const teamPush = await Event.findByIdAndUpdate(event, {
+      $push: { teams: team },
+    });
+    const teamEventPush = await Team.findByIdAndUpdate(teamId, {
+      $push: { events: eventExisted },
+    });
+    return res
+      .status(201)
+      .json({ isError: true, title: "Success", message: "Event is added" });
+  }
 };
 
 module.exports.pushWorkshop = async (req, res) => {

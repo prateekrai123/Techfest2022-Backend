@@ -11,11 +11,12 @@ const {
   getVerifyUserWbe,
   addTeamMembersMail,
 } = require("../controllers/user");
+const isAdmin = require("../middleware/isAdmin");
 const isAuth = require("../middleware/isAuth");
 
 const router = require("express").Router();
 
-router.get("/allUsers", isAuth, getAllUsers);
+router.get("/allUsers", isAuth, isAdmin, getAllUsers);
 
 router.get("/getUserById", isAuth, getUserById);
 
@@ -30,7 +31,6 @@ router.post("/updateUser", isAuth, updateUser);
 router.post(
   "/pushEvent",
   isAuth,
-  hasPaymendSuccess,
   [check("event", "event is required")],
   pushEvent
 );

@@ -1,5 +1,7 @@
 const express = require("express");
 const { check } = require("express-validator");
+const teamCon = require("../controllers/team");
+
 const {
   signUp,
   signIn,
@@ -47,6 +49,10 @@ router.post(
 );
 
 router.get("/verifyUser/:token", verifyUser);
+router.get(
+  "/verifyTeamInvitation/:userId/:teamId",
+  teamCon.verifyTeamInvitation
+);
 
 router.post("/verify", [check("email", "email is required").isEmail()], verify);
 

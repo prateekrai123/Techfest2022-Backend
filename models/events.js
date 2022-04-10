@@ -41,6 +41,18 @@ const EventSchema = new mongoose.Schema({
     type: Date,
     required: true,
   },
+  teams: [
+    {
+      type: ObjectId,
+      ref: "Team",
+    },
+  ],
+  individual: [
+    {
+      type: ObjectId,
+      ref: "User",
+    },
+  ],
   studentCoordinator: [
     {
       type: ObjectId,

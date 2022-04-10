@@ -6,14 +6,16 @@ const {
   getByDomain,
   deletEvent,
 } = require("../controllers/events");
+const isAdmin = require("../middleware/isAdmin");
 const isAuth = require("../middleware/isAuth");
+
 const upload = require("../utils/upload");
 
 const router = require("express").Router();
-router.post("/addEvent", isAuth, upload.single("event"), addEvents);
+router.post("/addEvent", isAuth, isAdmin, upload.single("event"), addEvents);
 
 router.get("/getAllEvents", getAllEvents);
 router.get("/getByDomain/:name", getByDomain);
 router.get("/getEventById", [check("id", "ID is required")], getEventById);
-router.delete("/deleteEvent/:eId", isAuth, deletEvent);
+router.delete("/deleteEvent/:eId", isAuth, isAdmin, deletEvent);
 module.exports = router;

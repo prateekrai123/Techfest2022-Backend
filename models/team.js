@@ -8,24 +8,36 @@ const TeamSchema = new mongoose.Schema({
   },
   leaderId: {
     type: ObjectId,
+    ref: "User",
     required: true,
   },
-  event: {
-    type: ObjectId,
-    required: true,
+  leaderName: {
+    type: String,
+  },
+  events: [
+    {
+      type: ObjectId,
+      ref: "Event",
+    },
+  ],
+  eventType: {
+    type: String,
   },
   members: [
     {
+      memberId: {
+        type: ObjectId,
+        ref: "User",
+      },
       email: {
         type: String,
-        required: true,
       },
       status: {
-        type: String,
-        required: true,
+        type: Boolean,
+        required: false,
       },
     },
   ],
 });
 
-module.exports = mongoose.model("Teams", TeamSchema);
+module.exports = mongoose.model("Team", TeamSchema);

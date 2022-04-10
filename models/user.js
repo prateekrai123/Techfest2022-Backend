@@ -1,5 +1,5 @@
 const mongoose = require("mongoose");
-
+const { ObjectId } = mongoose.Schema;
 const userSchema = mongoose.Schema(
   {
     name: {
@@ -117,27 +117,10 @@ const userSchema = mongoose.Schema(
     payPlan: {
       type: String,
     },
-    teams: [
-      {
-        id: mongoose.Schema.Types.ObjectId,
-      },
-    ],
     teamMembers: [
       {
-        teamMembersLeader: {
-          type: mongoose.Schema.Types.ObjectId,
-          ref: "User",
-        },
-        teamMembersDetails: [
-          {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: "User",
-            isAccepted: {
-              type: Boolean,
-              default: false,
-            },
-          },
-        ],
+        type: ObjectId,
+        ref: "Team",
       },
     ],
 

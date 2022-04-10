@@ -6,6 +6,7 @@ const { check, body } = require("express-validator");
 const coordinatorController = require("../controllers/coordinator");
 const Coordinator = require("../models/coordinator");
 const isAuth = require("../middleware/isAuth");
+const isAdmin = require("../middleware/isAdmin");
 
 const router = express.Router();
 
@@ -13,6 +14,7 @@ const router = express.Router();
 router.post(
   "/creating",
   isAuth,
+  isAdmin,
   [body("coordinatorType").trim().toLowerCase()],
   upload.single("coordinator"),
   coordinatorController.createCoordinator
@@ -28,20 +30,24 @@ router.get(
 router.get(
   "/get-all-details",
   isAuth,
+  isAdmin,
   coordinatorController.getAllDetailsCoordinator
 );
 router.get("/getStudetntCoordniator", coordinatorController.getStudentCo);
 router.get("/getFacultyCoordniator", coordinatorController.getFacultyCo);
 
-router.post(
+router.put(
   "/update/:cid",
   isAuth,
+  isAdmin,
   [check("cid", "Id should be proper").isLength({ min: 24 })],
+  upload.single("coordinator"),
   coordinatorController.updateCoordinator
 );
 router.delete(
   "/delete/:cid",
   isAuth,
+  isAdmin,
   [check("cid", "Id should be proper").isLength({ min: 24 })],
   coordinatorController.deleteCoordinator
 );

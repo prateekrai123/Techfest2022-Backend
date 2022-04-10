@@ -14,13 +14,13 @@ module.exports = (req, res, next) => {
   try {
     decodedToken = jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
   } catch (error) {
-    res
+    return res
       .status(208)
       .json({ isError: true, authError: true, message: "Failed Not good" });
   }
 
   if (!decodedToken) {
-    res
+    return res
       .status(208)
       .json({ isError: true, authError: true, message: "Failed Token expire" });
   }

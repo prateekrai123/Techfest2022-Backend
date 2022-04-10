@@ -1,6 +1,7 @@
 const express = require("express");
 const { check } = require("express-validator");
 const workshopController = require("../controllers/workshop");
+const isAdmin = require("../middleware/isAdmin");
 const isAuth = require("../middleware/isAuth");
 const upload = require("../utils/upload");
 
@@ -14,6 +15,7 @@ router.get(
 router.post(
   "/create",
   isAuth,
+  isAdmin,
   [
     check("wsName", "Workshop name required!"),
     check("wsDesc", "Workshop name required!"),
@@ -29,6 +31,8 @@ router.post(
 router.get("/all", workshopController.getAllWokshop);
 router.delete(
   "/del/:wId",
+  isAuth,
+  isAdmin,
   [check("wId", "Id should be proper").isLength({ min: 24 })],
   workshopController.deleteWorkshop
 );
