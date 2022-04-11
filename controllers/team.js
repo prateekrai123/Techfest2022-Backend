@@ -116,19 +116,23 @@ exports.getTeams = (req, res) => {
     });
 };
 
-exports.getProperTeams = (req, res) => {
+exports.getProperTeams = async (req, res) => {
   const userId = req.userId;
-  User.findById(userId)
-    .populate("teamMembers", ["name", "leaderId", "leaderName", "members"])
-    .exec(async (err, user) => {
-      // return console.log(user);
-      // const leaderUser = await User.findById(user.teamMembers.leaderId)
+  Team.findOne({});
+  const teamMembersPart = await User.findById(userId).populate(
+    "teamMembers",
+    "name"
+  );
 
-      return res.status(200).json({
-        isError: false,
-        teams: user.teamMembers,
-      });
-    });
+  let teams = [];
+  for (const t of teamMembersPart.teamMembers) {
+    const tt = await Team.findById(t._id).populate("events", ["name"]);
+    teams.push(tt);
+  }
+  return res.status(200).json({
+    isError: false,
+    teams: teams,
+  });
 };
 
 exports.addTeamMember = async (req, res, next) => {
@@ -136,15 +140,9 @@ exports.addTeamMember = async (req, res, next) => {
   const teamName = req.body.teamName;
   const memberMail = req.body.memberMail;
   const eventMode = req.body.eventMode;
-  // console.log(req.body);
 
   const leader = await User.findById(leaderId);
 
-  // return console.log(
-  //   (eventMode === "offline" &&
-  //     leader.paymentDetails.subscriptionType !== "599") ||
-  //     !leader.paymentDetails.isSuccess
-  // );
   if (
     (eventMode === "offline" &&
       leader.paymentDetails.subscriptionType !== "599") ||
