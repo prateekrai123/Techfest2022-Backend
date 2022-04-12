@@ -35,7 +35,7 @@ exports.signIn = async (req, res) => {
       return res.status(208).json({
         isError: true,
         title: "Error",
-        message: "The user is not verified!",
+        message: "Not verified! Please verify your mail now!",
       });
     }
 
@@ -194,7 +194,10 @@ exports.signUp = async (req, res) => {
     }
     return res
       .status(201)
-      .json({ message: "The user is inserted", title: "Success" });
+      .json({
+        message: "Verification link has been sent to your mail now!",
+        title: "Success",
+      });
   });
 };
 
