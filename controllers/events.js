@@ -91,7 +91,7 @@ module.exports.addEvents = (req, res) => {
           } else {
             return res.status(200).json({
               isError: false,
-              title: "Error",
+              title: "Success",
               message: "Event is added",
             });
           }

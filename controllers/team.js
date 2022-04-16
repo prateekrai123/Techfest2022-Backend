@@ -1,7 +1,8 @@
-const { validationResult } = require("express-validator");
+const { validationResult, Result } = require("express-validator");
 
 const Team = require("../models/team");
 const User = require("../models/user");
+const Event = require("../models/events");
 const mail = require("../utils/mail");
 
 module.exports.createTeam = async (req, res) => {
@@ -33,6 +34,16 @@ module.exports.createTeam = async (req, res) => {
   for (const element of members) {
     const user = await User.findOne({ email: element });
     // console.log(user);
+    if (
+      (eventType === "offline" &&
+        user.paymentDetails.subscriptionType !== "599") ||
+      !user.paymentDetails.isSuccess
+    ) {
+      return res.status(208).json({
+        isError: true,
+        message: `Some member do not have compatible payment, Please change event mode!`,
+      });
+    }
     teamMembers.push({
       memberId: user._id.toString(),
       name: user.name,
@@ -118,7 +129,7 @@ exports.getTeams = (req, res) => {
 
 exports.getProperTeams = async (req, res) => {
   const userId = req.userId;
-  Team.findOne({});
+
   const teamMembersPart = await User.findById(userId).populate(
     "teamMembers",
     "name"
@@ -129,6 +140,15 @@ exports.getProperTeams = async (req, res) => {
     const tt = await Team.findById(t._id).populate("events", ["name"]);
     teams.push(tt);
   }
+  return res.status(200).json({
+    isError: false,
+    teams: teams,
+  });
+};
+
+exports.getTeamWhomeLeader = async (req, res) => {
+  const userId = req.userId;
+  const teams = await Team.find({ leaderId: userId });
   return res.status(200).json({
     isError: false,
     teams: teams,
@@ -280,5 +300,69 @@ exports.verifyTeamInvitation = async (req, res) => {
   res.render("teamInvitation", {
     isError: false,
     message: "Successfully accepted!",
+  });
+};
+
+exports.deleteTeam = async (req, res) => {
+  const userId = req.userId;
+  const teamId = req.body.team;
+
+  const team = await Team.findById(teamId);
+  if (!team) {
+    return res.status(208).json({
+      isError: true,
+      title: "Error",
+      message: `Team not found!`,
+    });
+  }
+  // return console.log(userId, team.leaderId);
+  if (userId !== team.leaderId.toString()) {
+    return res.status(208).json({
+      isError: true,
+      title: "Error",
+      message: `You are not leader of this team!`,
+    });
+  }
+  for (const eventId of team.events) {
+    //pulling events in leader user
+    const leader = await User.findByIdAndUpdate(userId, {
+      $pull: { events: eventId },
+    });
+  }
+  const leader = await User.findByIdAndUpdate(userId, {
+    $pull: { teamMembers: team._id },
+  });
+
+  for (const member of team.members) {
+    for (const eventId of team.events) {
+      //pulling all events in perticular user
+      const user = await User.findByIdAndUpdate(
+        member.memberId,
+
+        { $pull: { events: eventId } }
+      );
+    }
+    if (member.status) {
+      const user = await User.findByIdAndUpdate(
+        //pulling the team if accepted
+        member.memberId,
+
+        { $pull: { teamMembers: team._id } }
+      );
+    }
+  }
+  for (const eventId of team.events) {
+    //pulling team from all events
+    const event = await Event.findByIdAndUpdate(eventId, {
+      $pull: { teams: team._id },
+    });
+  }
+
+  Team.findByIdAndRemove(teamId).then((results) => {
+    return res.status(208).json({
+      isError: false,
+      title: "Success",
+      message: `team deleted!`,
+    });
   });
 };

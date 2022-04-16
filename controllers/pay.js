@@ -6,8 +6,8 @@ exports.payUser = async (req, res, next) => {
   const userSubscriptionPrice = req.body.price;
   const priceId =
     userSubscriptionPrice === 299
-      ? "price_1Kgr1xSFIjJ4RWp4Na3iKYxL"
-      : "price_1KgqzSSFIjJ4RWp4396olMsQ";
+      ? process.env.PRICE_PRODUCT_SILVER
+      : process.env.PRICE_PRODUCT_GOLD;
   // return console.log(priceId);
 
   try {
@@ -22,7 +22,7 @@ exports.payUser = async (req, res, next) => {
         },
       ],
       metadata: {
-        userId: "mima",
+        userId: uId,
       },
       success_url: `${process.env.API_URL_BK}/pay/success/?uId=${uId}`,
       cancel_url: `${process.env.API_URL_BK}/pay/fail/?uId=${uId}`,
@@ -37,7 +37,7 @@ exports.payUser = async (req, res, next) => {
         },
       }
     );
-    // return console.log(`${process.env.API_URL_BK}/pay/success/?uId=${uId}`);
+    // return console.log(sessionStripe);
     res.status(200).json({ url: sessionStripe.url, isError: false });
     // return console.log(checkIfAlreadyPaid, sessionStripe.url);
   } catch (e) {
@@ -53,10 +53,18 @@ exports.successPay = async (req, res) => {
       `${process.env.API_FRONTEND_URL}/user/pay/?paystatus=false`
     );
   }
+  if (!getPaymentId.paymentDetails.paymentId) {
+    return res.send("Some Error Accured");
+  }
   const checkIfPaid = await Stripe.checkout.sessions.retrieve(
     getPaymentId.paymentDetails.paymentId
   );
+  // return console.log(checkIfPaid);
   if (!checkIfPaid) {
+    return res.send("Some Error Accured");
+  }
+
+  if (checkIfPaid.payment_status === "unpaid") {
     return res.send("Some Error Accured");
   }
 

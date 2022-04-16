@@ -101,6 +101,7 @@ module.exports.pushEvent = async (req, res) => {
   const userId = req.userId;
   const event = req.body.event;
   const teamId = req.body.teamId;
+  const eventMode = req.body.eventMode;
   const user = await User.findById(userId);
 
   if (!user) {
@@ -129,7 +130,7 @@ module.exports.pushEvent = async (req, res) => {
       return res.status(208).json({
         isError: true,
         title: "Payment Error",
-        message: "Payment will begin shortly!",
+        message: "You do not have compatible payment!",
       });
     }
     const eventsListed = user.events.map((e) => {
@@ -140,7 +141,7 @@ module.exports.pushEvent = async (req, res) => {
       return res.status(208).json({
         isError: true,
         title: "Event Exist",
-        message: "Event Already Added",
+        message: "Event Already registered!",
       });
     }
     const userPush = await Event.findByIdAndUpdate(event, {
@@ -178,6 +179,14 @@ module.exports.pushEvent = async (req, res) => {
         isError: true,
         title: "Team Error",
         message: "You are not leader of this team!",
+      });
+    }
+    // return console.log(team.eventType);
+    if (team.eventType !== eventMode) {
+      return res.status(208).json({
+        isError: true,
+        title: "Pay Error",
+        message: "Your team have not compatible event mode!",
       });
     }
     const individualExist = user.events.map((u) => {
