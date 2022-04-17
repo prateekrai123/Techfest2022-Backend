@@ -10,6 +10,7 @@ const {
   getReferralCode,
   getVerifyUserWbe,
   addTeamMembersMail,
+  unenrolEvent,
 } = require("../controllers/user");
 const isAdmin = require("../middleware/isAdmin");
 const isAuth = require("../middleware/isAuth");
@@ -44,7 +45,7 @@ router.post(
   [check("workshop", "workshop is required")],
   pushWorkshop
 );
-
+router.post("/unenrolEvent", isAuth, unenrolEvent);
 router.get("/referralCode", getReferralCode);
 
 module.exports = router;

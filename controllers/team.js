@@ -136,6 +136,12 @@ exports.getProperTeams = async (req, res) => {
   );
 
   let teams = [];
+  if (!teamMembersPart.teamMembers) {
+    return res.status(200).json({
+      isError: false,
+      teams: teams,
+    });
+  }
   for (const t of teamMembersPart.teamMembers) {
     const tt = await Team.findById(t._id).populate("events", ["name"]);
     teams.push(tt);

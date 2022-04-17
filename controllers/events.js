@@ -3,6 +3,8 @@ const Event = require("../models/events");
 const { successAction, failAction } = require("../utils/response");
 const fileHelper = require("../utils/file");
 const fs = require("fs");
+const User = require("../models/user");
+const Team = require("../models/team");
 
 module.exports.addEvents = (req, res) => {
   if (!req.file) {
@@ -191,5 +193,58 @@ exports.deletEvent = (req, res, next) => {
       statusCode: 410,
       message: "successfully deleted! ",
     });
+  });
+};
+
+exports.getProperEvents = async (req, res) => {
+  const userId = req.userId;
+  const user = await User.findById(userId)
+    .populate("events", ["name", "endDate"])
+    .populate("workshops", ["workshopName", "endDate"])
+    .populate("teamMembers", ["name", "events"]);
+  if (!user) {
+    return res.status(200).json({
+      isError: true,
+      title: "Error",
+      message: "Not found",
+    });
+  }
+  const userSubscribeEvents = user.events;
+  const userTeamSubsEvents = [];
+  for (const t of user.teamMembers) {
+    const tt = await Team.findById(t._id).populate("events", [
+      "name",
+      "endDate",
+    ]);
+    for (const e of tt.events) {
+      userTeamSubsEvents.push(e._id.toString());
+    }
+  }
+  const eventsUserSubs = [];
+  const eventTeamsSub = [];
+  for (const e of user.events) {
+    let actionFeild = {
+      _id: e._id,
+      name: e.name,
+      endDate: e.endDate,
+      action: "",
+    };
+    if (userTeamSubsEvents.includes(e._id.toString())) {
+      actionFeild.action = "no"; //with team
+      eventTeamsSub.push(actionFeild);
+    } else {
+      actionFeild.action = "yes"; //individual
+
+      eventsUserSubs.push(actionFeild);
+    }
+  }
+
+  return res.status(200).json({
+    isError: true,
+    title: "Good",
+    message: " found",
+    eventsIndividual: eventsUserSubs,
+    eventsTeam: eventTeamsSub,
+    workshops: user.workshops,
   });
 };

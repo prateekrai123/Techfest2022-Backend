@@ -367,3 +367,36 @@ module.exports.updateUser = (req, res) => {
     }
   );
 };
+
+exports.unenrolEvent = async (req, res) => {
+  const userId = req.userId;
+  const eventId = req.body.eventId;
+  const user = await User.findById(userId);
+  const event = await Event.findById(eventId);
+  if (!user) {
+    return res.status(208).json({
+      isError: true,
+      title: "Error",
+      message: "User not found!",
+    });
+  }
+  if (!event) {
+    return res.status(208).json({
+      isError: true,
+      title: "Error",
+      message: "Event not found!",
+    });
+  }
+
+  const removeFromUser = await User.findByIdAndUpdate(userId, {
+    $pull: { events: eventId },
+  });
+  const reomveFromEvent = await Event.findByIdAndUpdate(eventId, {
+    $pull: { individual: userId },
+  });
+  return res.status(200).json({
+    isError: false,
+    title: "Success",
+    message: "Event unenrolled!",
+  });
+};
