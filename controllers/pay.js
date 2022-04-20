@@ -1,4 +1,4 @@
-const Stripe = require("stripe")(process.env.TEMP_STRIPE_PRV_KEY);
+const Stripe = require("stripe")(process.env.TEMP_STRIPE_PRV_KEY_LIVE);
 const User = require("../models/user");
 
 exports.payUser = async (req, res, next) => {
@@ -6,8 +6,8 @@ exports.payUser = async (req, res, next) => {
   const userSubscriptionPrice = req.body.price;
   const priceId =
     userSubscriptionPrice === 299
-      ? process.env.PRICE_PRODUCT_SILVER
-      : process.env.PRICE_PRODUCT_GOLD;
+      ? process.env.PRICE_PRODUCT_SILVER_LIVE
+      : process.env.PRICE_PRODUCT_GOLD_LIVE;
   // return console.log(priceId);
 
   try {
@@ -50,7 +50,7 @@ exports.successPay = async (req, res) => {
   const getPaymentId = await User.findById({ _id: uId });
   if (!getPaymentId) {
     return res.redirect(
-      `${process.env.API_FRONTEND_URL}/user/pay/?paystatus=false`
+      `${process.env.LIVE_FRONTEND_URL}/user/pay/?paystatus=false`
     );
   }
   if (!getPaymentId.paymentDetails.paymentId) {
