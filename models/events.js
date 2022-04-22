@@ -13,7 +13,7 @@ const EventSchema = new mongoose.Schema({
     trim: true,
   },
   isTeamParticipation: {
-    type: boolean,
+    type: Boolean,
   },
   eventMode: {
     type: String,
