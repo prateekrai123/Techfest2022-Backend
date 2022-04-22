@@ -12,6 +12,9 @@ const EventSchema = new mongoose.Schema({
     required: true,
     trim: true,
   },
+  isTeamParticipation: {
+    type: boolean,
+  },
   eventMode: {
     type: String,
     required: true,
