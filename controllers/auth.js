@@ -45,7 +45,7 @@ exports.signIn = async (req, res) => {
         const token = await jwt.sign(
           { id: user._id, role: user.role },
           process.env.ACCESS_TOKEN_SECRET,
-          { expiresIn: "3h" }
+          { expiresIn: "24h" }
         );
         res.cookie("token", token, { expire: new Date() + 1000 });
         return res.status(200).json({
@@ -192,12 +192,10 @@ exports.signUp = async (req, res) => {
         message: "Error in SignUp. Some error occurred",
       });
     }
-    return res
-      .status(201)
-      .json({
-        message: "Verification link has been sent to your mail now!",
-        title: "Success",
-      });
+    return res.status(201).json({
+      message: "Verification link has been sent to your mail now!",
+      title: "Success",
+    });
   });
 };
 
