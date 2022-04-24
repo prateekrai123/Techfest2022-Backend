@@ -155,18 +155,75 @@ exports.getByDomain = (req, res, next) => {
     });
 };
 
-module.exports.getEventById = (req, res) => {
+module.exports.getEventById = async (req, res) => {
   const errors = validationResult(req);
-
+  const eventId = req.params.id;
   if (!errors.isEmpty()) {
     return res.status(422).json({ errors: errors.array() });
   }
 
-  Event.findById(req.body.id, (err, event) => {
-    if (err || !event) {
-      return res.status(400).json(failAction("Event does not exists"));
+  const eventData = await Event.findById(eventId)
+    .populate("individual", ["name", "whatsappPhoneNumber", "email"])
+    .exec();
+
+  let teams = [];
+  let individuals = [];
+  for (const individual of eventData.individual) {
+    const individualDataList = {
+      name: "",
+      whatsappPhoneNumber: "",
+      email: "",
+    };
+    const individualData = User.findById(individual._id);
+
+    individualDataList.name = individualData.name;
+    individualDataList.email = individualData.email;
+
+    if (individualData.whatsappPhoneNumber !== null) {
+      individualDataList.whatsappPhoneNumber =
+        individualData.whatsappPhoneNumber;
+    } else {
+      individualDataList.whatsappPhoneNumber = "";
     }
-    return res.status(200).json(successAction(event));
+
+    individuals.push(individualDataList);
+  }
+  for (const teamVal of eventData.teams) {
+    const teamData = {
+      teamName: "",
+      teamLeaderName: "",
+      teamLeaderWahtsApp: "",
+      teamLeaderMail: "",
+      membersMail: [],
+    };
+    const teamActualData = await Team.findById(teamVal._id);
+    const leaderData = await User.findById(teamActualData.leaderId);
+    teamData.teamName = teamActualData.name;
+    teamData.teamLeaderName = leaderData.name;
+    if (leaderData.whatsappPhoneNumber !== null) {
+      teamData.teamLeaderWahtsApp = leaderData.whatsappPhoneNumber;
+    }
+
+    teamData.teamLeaderMail = leaderData.email;
+    teamData.membersMail = teamActualData.members;
+
+    teams.push(teamData);
+  }
+
+  if (!eventData) {
+    return res.status(200).json({
+      isError: false,
+      title: "Not found",
+      message: "Not found!",
+    });
+  }
+  return res.status(200).json({
+    isError: false,
+    title: "found",
+    message: "Success",
+    event: eventData,
+    teams: teams,
+    individualsArray: individuals,
   });
 };
 
