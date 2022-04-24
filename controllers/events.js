@@ -275,7 +275,7 @@ module.exports.getTeamsByEventName = (req, res) => {
           }
           te.members.map((member) => {
             User.findById(member.memberId).then((user) => {
-              if (member.id === leaderId) {
+              if (member.memberId == leaderId) {
                 leaderEmail = user.email;
               }
               // console.log(user.name);
