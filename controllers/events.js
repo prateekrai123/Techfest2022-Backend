@@ -267,14 +267,13 @@ module.exports.getTeamsByEventName = (req, res) => {
       let teamArray = [];
       teams.map((team) => {
         let theMembers = [];
-        let t;
         Team.findById(team, (err, te) => {
           if (err || !te) {
             return res.status(200).json({ err: "Team not found" });
           }
           te.members.map((member) => {
             User.findById(member.memberId).then((user) => {
-              console.log(user);
+              console.log(user.name);
               theMembers.push(user.name);
             });
           });
