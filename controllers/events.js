@@ -276,7 +276,7 @@ module.exports.getTeamsByEventName = (req, res) => {
         //   });
         // });
         let t;
-        Team.findById(te, (err, team) => {
+        Team.findById(team, (err, team) => {
           if (err || !te) {
             return res.status(200).json({ err: "Team not found" });
           }
