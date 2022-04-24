@@ -6,6 +6,7 @@ const {
   getByDomain,
   deletEvent,
   getProperEvents,
+  getTeamsByEventName,
 } = require("../controllers/events");
 const isAdmin = require("../middleware/isAdmin");
 const isAuth = require("../middleware/isAuth");
@@ -19,4 +20,6 @@ router.get("/getAllEvents", getAllEvents);
 router.get("/getByDomain/:name", getByDomain);
 router.get("/getEventById", [check("id", "ID is required")], getEventById);
 router.delete("/deleteEvent/:eId", isAuth, isAdmin, deletEvent);
+router.post("/getTeams", check("name", "name is required"), getTeamsByEventName);
+
 module.exports = router;

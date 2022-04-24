@@ -5,6 +5,7 @@ const fileHelper = require("../utils/file");
 const fs = require("fs");
 const User = require("../models/user");
 const Team = require("../models/team");
+const { ideahub } = require("googleapis/build/src/apis/ideahub");
 
 module.exports.addEvents = (req, res) => {
   if (!req.file) {
@@ -246,5 +247,57 @@ exports.getProperEvents = async (req, res) => {
     eventsIndividual: eventsUserSubs,
     eventsTeam: eventTeamsSub,
     workshops: user.workshops,
+  });
+};
+
+module.exports.getTeamsByEventName = (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  const { name } = req.body;
+
+  Event.findOne({ name: name }, (err, e) => {
+    if (err || !e) {
+      return res.status(400).json({ err: "Event not found" });
+    }
+    try {
+      const teams = e.teams;
+      let teamArray = [];
+      teams.map((team) => {
+        let leaderId = team.leaderId;
+        let leaderEmail;
+
+        let theMembers = [];
+        Team.findById(team, (err, te) => {
+          if (err || !te) {
+            return res.status(200).json({ err: "Team not found" });
+          }
+          te.members.map((member) => {
+            User.findById(member.memberId).then((user) => {
+              // console.log(user.name);
+              theMembers.push(user.name);
+            });
+          });
+          setTimeout(() => {
+            console.log(theMembers);
+            const myTeam = {
+              name: te.name,
+              leaderName: te.leaderName,
+              members: theMembers,
+            };
+            teamArray.push(myTeam);
+          }, 1000);
+          // console.log(myTeam);
+        });
+      });
+      setTimeout(() => {
+        return res.status(200).json({ teamArray });
+      }, 1500);
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Server error", err: err });
+    }
   });
 };
