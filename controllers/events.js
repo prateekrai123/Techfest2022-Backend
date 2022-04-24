@@ -258,10 +258,6 @@ module.exports.getTeamsByEventName = (req, res) => {
 
   const { id } = req.body;
 
-  // console.log(id);
-
-  let event;
-
   Event.findById(id, (err, e) => {
     if (err || !e) {
       return res.status(400).json({ err: "Event not found" });
@@ -270,8 +266,10 @@ module.exports.getTeamsByEventName = (req, res) => {
       // console.log(event);
       const teams = e.teams;
       let teamArray = [];
+      console.log(teams);
       teams.map((team) => {
         let members = [];
+        console.log(team);
         team.members.map((member) => {
           User.findById(member.memberId).then((user) => {
             members.push(user.name);
@@ -286,7 +284,7 @@ module.exports.getTeamsByEventName = (req, res) => {
       return res.status(200).json({ teamArray });
     } catch (err) {
       console.log(err);
-      return res.status(500).json({ msg: "Server error" });
+      return res.status(500).json({ msg: "Server error", err: err });
     }
   });
 };
