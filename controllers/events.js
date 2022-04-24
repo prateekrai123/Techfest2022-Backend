@@ -268,6 +268,7 @@ module.exports.getTeamsByEventName = (req, res) => {
       teams.map((team) => {
         let leaderId = team.leaderId;
         let leaderEmail;
+
         let theMembers = [];
         Team.findById(team, (err, te) => {
           if (err || !te) {
@@ -275,9 +276,6 @@ module.exports.getTeamsByEventName = (req, res) => {
           }
           te.members.map((member) => {
             User.findById(member.memberId).then((user) => {
-              if (user.id == leaderId) {
-                leaderEmail = user.email;
-              }
               // console.log(user.name);
               theMembers.push(user.name);
             });
@@ -286,7 +284,7 @@ module.exports.getTeamsByEventName = (req, res) => {
             console.log(theMembers);
             const myTeam = {
               name: te.name,
-              leaderEmail: leaderEmail,
+              leaderName: team.leaderName,
               members: theMembers,
             };
             teamArray.push(myTeam);
