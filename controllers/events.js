@@ -286,6 +286,7 @@ module.exports.getTeamsByEventName = (req, res) => {
             console.log(theMembers);
             const myTeam = {
               name: te.name,
+              leaderEmail: leaderEmail,
               members: theMembers,
             };
             teamArray.push(myTeam);
