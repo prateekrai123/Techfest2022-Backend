@@ -288,7 +288,7 @@ module.exports.getTeamsByEventName = (req, res) => {
         });
         const myTeam = {
           name: team.name,
-          members: members,
+          members: theMembers,
         };
         teamArray.push(myTeam);
       });
