@@ -256,9 +256,9 @@ module.exports.getTeamsByEventName = (req, res) => {
     return res.status(422).json({ errors: errors.array() });
   }
 
-  const { id } = req.body;
+  const { name } = req.body;
 
-  Event.findById(id, (err, e) => {
+  Event.findOne({ name: name }, (err, e) => {
     if (err || !e) {
       return res.status(400).json({ err: "Event not found" });
     }
@@ -273,7 +273,7 @@ module.exports.getTeamsByEventName = (req, res) => {
           }
           te.members.map((member) => {
             User.findById(member.memberId).then((user) => {
-              console.log(user.name);
+              // console.log(user.name);
               theMembers.push(user.name);
             });
           });
