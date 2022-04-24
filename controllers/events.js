@@ -5,6 +5,7 @@ const fileHelper = require("../utils/file");
 const fs = require("fs");
 const User = require("../models/user");
 const Team = require("../models/team");
+const { ideahub } = require("googleapis/build/src/apis/ideahub");
 
 module.exports.addEvents = (req, res) => {
   if (!req.file) {
@@ -246,5 +247,46 @@ exports.getProperEvents = async (req, res) => {
     eventsIndividual: eventsUserSubs,
     eventsTeam: eventTeamsSub,
     workshops: user.workshops,
+  });
+};
+
+module.exports.getTeamsByEventName = (req, res) => {
+  const errors = validationResult(req);
+  if (!errors.isEmpty()) {
+    return res.status(422).json({ errors: errors.array() });
+  }
+
+  const { id } = req.body;
+
+  // console.log(id);
+
+  let event;
+
+  Event.findById(id, (err, e) => {
+    if (err || !e) {
+      return res.status(400).json({ err: "Event not found" });
+    }
+    try {
+      // console.log(event);
+      const teams = e.teams;
+      let teamArray = [];
+      teams.map((team) => {
+        let members = [];
+        team.members.map((member) => {
+          User.findById(member.memberId).then((user) => {
+            members.push(user.name);
+          });
+        });
+        const myTeam = {
+          name: team.name,
+          members: members,
+        };
+        teamArray.push(myTeam);
+      });
+      return res.status(200).json({ teamArray });
+    } catch (err) {
+      console.log(err);
+      return res.status(500).json({ msg: "Server error" });
+    }
   });
 };
