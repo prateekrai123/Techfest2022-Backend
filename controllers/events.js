@@ -269,7 +269,7 @@ module.exports.getTeamsByEventName = (req, res) => {
       // console.log(teams);
       teams.map((team) => {
         let theMembers = [];
-        console.log(team.members);
+        // console.log(team.members);
         // team.members.map((member) => {
         //   User.findById(member.memberId).then((user) => {
         //     theMembers.push(user.name);
@@ -281,6 +281,7 @@ module.exports.getTeamsByEventName = (req, res) => {
             return res.status(200).json({ err: "Team not found" });
           }
           te.members.map((member) => {
+            console.log(member);
             User.findById(member.memberId).then((user) => {
               theMembers.push(user.name);
             });
@@ -289,6 +290,7 @@ module.exports.getTeamsByEventName = (req, res) => {
             name: te.name,
             members: theMembers,
           };
+          console.log(myTeam);
           teamArray.push(myTeam);
         });
       });
