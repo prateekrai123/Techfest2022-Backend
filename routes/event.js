@@ -20,6 +20,6 @@ router.get("/getAllEvents", getAllEvents);
 router.get("/getByDomain/:name", getByDomain);
 router.get("/getEventById", [check("id", "ID is required")], getEventById);
 router.delete("/deleteEvent/:eId", isAuth, isAdmin, deletEvent);
-router.get("/getTeams", check("name", "name is required"), getTeamsByEventName);
+router.post("/getTeams", check("name", "name is required"), getTeamsByEventName);
 
 module.exports = router;
