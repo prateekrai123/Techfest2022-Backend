@@ -263,16 +263,27 @@ module.exports.getTeamsByEventName = (req, res) => {
       return res.status(400).json({ err: "Event not found" });
     }
     try {
-      console.log(e);
+      // console.log(e);
       const teams = e.teams;
       let teamArray = [];
-      console.log(teams);
+      // console.log(teams);
       teams.map((team) => {
         let theMembers = [];
-        console.log(team);
-        team.members.map((member) => {
-          User.findById(member.memberId).then((user) => {
-            theMembers.push(user.name);
+        console.log(team.members);
+        // team.members.map((member) => {
+        //   User.findById(member.memberId).then((user) => {
+        //     theMembers.push(user.name);
+        //   });
+        // });
+        let t;
+        Team.findById(te, (err, team) => {
+          if (err || !te) {
+            return res.status(200).json({ err: "Team not found" });
+          }
+          te.members.map((member) => {
+            User.findById(member.memberId).then((user) => {
+              theMembers.push(user.name);
+            });
           });
         });
         const myTeam = {
