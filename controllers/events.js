@@ -276,7 +276,7 @@ module.exports.getTeamsByEventName = (req, res) => {
         //   });
         // });
         let t;
-        Team.findById(team, (err, team) => {
+        Team.findById(team, (err, te) => {
           if (err || !te) {
             return res.status(200).json({ err: "Team not found" });
           }
@@ -285,12 +285,12 @@ module.exports.getTeamsByEventName = (req, res) => {
               theMembers.push(user.name);
             });
           });
+          const myTeam = {
+            name: te.name,
+            members: theMembers,
+          };
+          teamArray.push(myTeam);
         });
-        const myTeam = {
-          name: team.name,
-          members: theMembers,
-        };
-        teamArray.push(myTeam);
       });
       return res.status(200).json({ teamArray });
     } catch (err) {
