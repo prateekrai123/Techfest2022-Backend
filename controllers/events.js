@@ -284,11 +284,11 @@ module.exports.getTeamsByEventName = (req, res) => {
               members: theMembers,
             };
             teamArray.push(myTeam);
+            return res.status(200).json({ teamArray });
           }, 1000);
           // console.log(myTeam);
         });
       });
-      return res.status(200).json({ teamArray });
     } catch (err) {
       console.log(err);
       return res.status(500).json({ msg: "Server error", err: err });
