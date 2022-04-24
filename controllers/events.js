@@ -277,13 +277,15 @@ module.exports.getTeamsByEventName = (req, res) => {
               theMembers.push(user.name);
             });
           });
-          console.log(theMembers);
-          const myTeam = {
-            name: te.name,
-            members: theMembers,
-          };
+          setTimeout(() => {
+            console.log(theMembers);
+            const myTeam = {
+              name: te.name,
+              members: theMembers,
+            };
+            teamArray.push(myTeam);
+          }, 1000);
           // console.log(myTeam);
-          teamArray.push(myTeam);
         });
       });
       return res.status(200).json({ teamArray });
