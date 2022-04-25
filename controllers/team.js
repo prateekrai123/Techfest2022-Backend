@@ -241,7 +241,7 @@ exports.verifyTeamInvitation = async (req, res) => {
   if (teamId.length != 24 || teamId.length != 24) {
     return res.render("teamInvitation", {
       isError: true,
-      message: "Something not wrong in link!",
+      message: "Something wrong in link!",
     });
   }
   const team = await Team.findById(teamId);
@@ -251,7 +251,7 @@ exports.verifyTeamInvitation = async (req, res) => {
   if (!team || !user) {
     return res.render("teamInvitation", {
       isError: true,
-      message: "Something not  wrong!",
+      message: "Something  wrong!",
     });
   }
   const userTeamExist = team.members.map((m) => {

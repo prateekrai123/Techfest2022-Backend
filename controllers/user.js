@@ -186,7 +186,7 @@ module.exports.pushEvent = async (req, res) => {
       return res.status(208).json({
         isError: true,
         title: "Pay Error",
-        message: "Your team have not compatible event mode!",
+        message: "this is an offline event and your team mode is online",
       });
     }
     const individualExist = user.events.map((u) => {
